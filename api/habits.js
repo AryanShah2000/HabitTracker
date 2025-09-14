@@ -43,29 +43,17 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ success: false, error: 'Date is required' });
       }
       
-      // Check if activity for this date already exists
-      const existing = await sql`
-        SELECT id FROM activities WHERE date = ${date}
+      // Use UPSERT (INSERT ... ON CONFLICT) to handle existing records
+      const result = await sql`
+        INSERT INTO activities (date, water, protein, exercise)
+        VALUES (${date}, ${water}, ${protein}, ${exercise})
+        ON CONFLICT (date) DO UPDATE SET 
+          water = EXCLUDED.water,
+          protein = EXCLUDED.protein,
+          exercise = EXCLUDED.exercise,
+          updated_at = CURRENT_TIMESTAMP
+        RETURNING id, date, water, protein, exercise, created_at as timestamp
       `;
-      
-      let result;
-      if (existing.length > 0) {
-        // Update existing activity
-        result = await sql`
-          UPDATE activities 
-          SET water = ${water}, protein = ${protein}, exercise = ${exercise},
-              updated_at = CURRENT_TIMESTAMP
-          WHERE date = ${date}
-          RETURNING id, date, water, protein, exercise, created_at as timestamp
-        `;
-      } else {
-        // Insert new activity
-        result = await sql`
-          INSERT INTO activities (date, water, protein, exercise)
-          VALUES (${date}, ${water}, ${protein}, ${exercise})
-          RETURNING id, date, water, protein, exercise, created_at as timestamp
-        `;
-      }
       
       console.log('Saved activity:', result[0]);
       res.status(200).json({ success: true, activity: result[0] });
