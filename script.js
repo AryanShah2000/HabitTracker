@@ -399,17 +399,22 @@ class HabitTracker {
         slider.value = 0;
         valueInput.value = 0;
         
-        // Update slider listener to sync with text input
-        slider.oninput = (e) => {
-            valueInput.value = e.target.value;
-        };
+        // Remove any existing event listeners by cloning elements
+        const newSlider = slider.cloneNode(true);
+        const newValueInput = valueInput.cloneNode(true);
+        slider.parentNode.replaceChild(newSlider, slider);
+        valueInput.parentNode.replaceChild(newValueInput, valueInput);
         
-        // Update text input listener to sync with slider
-        valueInput.oninput = (e) => {
+        // Add fresh event listeners
+        newSlider.addEventListener('input', (e) => {
+            newValueInput.value = e.target.value;
+        });
+        
+        newValueInput.addEventListener('input', (e) => {
             const value = Math.max(0, Math.min(parseFloat(e.target.value) || 0, goalData.target * 2));
-            slider.value = value;
-            valueInput.value = value;
-        };
+            newSlider.value = value;
+            newValueInput.value = value;
+        });
         
         document.getElementById('quickAddModal').classList.add('show');
     }
