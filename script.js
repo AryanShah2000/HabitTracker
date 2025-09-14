@@ -326,8 +326,14 @@ class HabitTracker {
     }
     
     async submitQuickAdd() {
+        console.log('submitQuickAdd called');
         const amount = parseFloat(document.getElementById('quickAddSlider').value);
-        if (amount <= 0) return;
+        console.log('Amount:', amount, 'Goal:', this.currentQuickAddGoal);
+        
+        if (amount <= 0) {
+            console.log('Amount is 0 or less, returning');
+            return;
+        }
         
         try {
             const activity = {
@@ -338,11 +344,15 @@ class HabitTracker {
                 timestamp: new Date().toISOString()
             };
             
+            console.log('Creating activity:', activity);
+            
             if (this.isOnline) {
                 const result = await this.apiCall('POST', { activity });
                 this.activities.push(result.activity);
+                console.log('Saved to server');
             } else {
                 this.activities.push(activity);
+                console.log('Saved locally');
             }
             
             await this.saveActivities();
@@ -350,8 +360,19 @@ class HabitTracker {
             this.renderCalendar();
             this.hideQuickAddModal();
             
+            console.log('Quick add completed successfully');
+            
         } catch (error) {
             console.log('Failed to save to server, saved locally:', error.message);
+            // Still add locally and update UI
+            this.activities.push({
+                id: Date.now(),
+                goal: this.currentQuickAddGoal,
+                date: this.formatDate(this.selectedDate),
+                amount,
+                timestamp: new Date().toISOString()
+            });
+            this.saveActivitiesLocal();
             this.updateProgress();
             this.renderCalendar();
             this.hideQuickAddModal();
