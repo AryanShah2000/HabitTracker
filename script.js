@@ -3,7 +3,7 @@ class HabitTracker {
     constructor() {
         this.goals = {
             water: { name: 'Water', target: 64, unit: 'fl oz', emoji: '💧' },
-            protein: { name: 'Protein', target: 100, unit: 'g', emoji: '�' },
+            protein: { name: 'Protein', target: 100, unit: 'g', emoji: '💪' },
             exercise: { name: 'Exercise', target: 30, unit: 'min', emoji: '🏃' }
         };
         
