@@ -83,6 +83,10 @@ class HabitTracker {
         window.addEventListener('offline', () => {
             this.isOnline = false;
             this.updateConnectionStatus();
+            
+            // Ensure we have the latest data cached when going offline
+            this.saveActivitiesLocal();
+            console.log('Gone offline - data cached locally');
         });
     }
     
@@ -170,18 +174,25 @@ class HabitTracker {
     
     // Combined Load Activities (try API first, fallback to local)
     async loadActivities() {
-        try {
-            if (this.isOnline) {
+        // Always load from local storage first to have immediate data
+        this.activities = this.loadActivitiesLocal();
+        console.log('Loaded activities from local storage:', this.activities.length);
+        
+        // Then try to sync with server if online
+        if (this.isOnline) {
+            try {
                 const result = await this.apiCall('GET');
-                this.activities = result.activities || [];
-                this.saveActivitiesLocal(); // Sync to local storage
-                console.log('Loaded activities from server:', this.activities.length);
-            } else {
-                throw new Error('Offline');
+                if (result.activities && result.activities.length >= 0) {
+                    this.activities = result.activities;
+                    this.saveActivitiesLocal(); // Update local storage with fresh data
+                    console.log('Updated activities from server:', this.activities.length);
+                    this.updateProgress(); // Refresh UI with server data
+                    this.renderCalendar();
+                }
+            } catch (error) {
+                console.log('Server sync failed, using local data:', error.message);
+                // Local data is already loaded, so we continue with that
             }
-        } catch (error) {
-            console.log('Loading from local storage:', error.message);
-            this.activities = this.loadActivitiesLocal();
         }
     }
     
