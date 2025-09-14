@@ -1,0 +1,27 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="#4CAF50" stroke="#2E7D32" stroke-width="8"/>
+  
+  <!-- Water droplet -->
+  <path d="M150 180 C150 160, 170 140, 190 140 C210 140, 230 160, 230 180 C230 200, 210 220, 190 220 C170 220, 150 200, 150 180 Z" fill="#2196F3"/>
+  
+  <!-- Protein (muscle) -->
+  <circle cx="360" cy="180" r="40" fill="#FF9800"/>
+  <circle cx="340" cy="200" r="25" fill="#FF9800"/>
+  <circle cx="380" cy="200" r="25" fill="#FF9800"/>
+  
+  <!-- Exercise (running figure) -->
+  <circle cx="190" cy="320" r="20" fill="#FFF"/>
+  <rect x="180" y="340" width="20" height="60" fill="#FFF"/>
+  <rect x="170" y="360" width="15" height="30" fill="#FFF"/>
+  <rect x="205" y="360" width="15" height="30" fill="#FFF"/>
+  <rect x="160" y="350" width="25" height="15" fill="#FFF"/>
+  
+  <!-- Progress rings -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#FFF" stroke-width="4" opacity="0.3"/>
+  <circle cx="256" cy="256" r="160" fill="none" stroke="#FFF" stroke-width="4" opacity="0.3"/>
+  <circle cx="256" cy="256" r="140" fill="none" stroke="#FFF" stroke-width="4" opacity="0.3"/>
+  
+  <!-- Center checkmark -->
+  <path d="M220 260 L240 280 L290 230" stroke="#FFF" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

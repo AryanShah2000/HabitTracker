@@ -20,6 +20,9 @@ class HabitTracker {
     }
     
     async init() {
+        // Register service worker for PWA functionality
+        this.registerServiceWorker();
+        
         this.setupOnlineListener();
         await this.loadActivities();
         this.updateCurrentDate();
@@ -29,6 +32,43 @@ class HabitTracker {
         
         // Set today's date as default in the form
         document.getElementById('dateInput').value = this.formatDate(this.selectedDate);
+    }
+    
+    async registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            try {
+                console.log('Registering service worker...');
+                const registration = await navigator.serviceWorker.register('/sw.js');
+                
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    console.log('New service worker found:', newWorker);
+                });
+                
+                console.log('Service worker registered successfully:', registration);
+                
+                // Handle quick action shortcuts from app icons
+                this.handleShortcutActions();
+                
+            } catch (error) {
+                console.log('Service worker registration failed:', error);
+            }
+        } else {
+            console.log('Service workers not supported');
+        }
+    }
+    
+    handleShortcutActions() {
+        // Check URL parameters for quick actions
+        const urlParams = new URLSearchParams(window.location.search);
+        const action = urlParams.get('action');
+        
+        if (action && this.goals[action]) {
+            // Auto-open the quick add modal for the specified goal
+            setTimeout(() => {
+                this.showQuickAddModal(action);
+            }, 500);
+        }
     }
     
     setupOnlineListener() {
