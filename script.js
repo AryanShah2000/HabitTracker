@@ -13,7 +13,8 @@ class HabitTracker {
         this.activities = [];
         this.editingActivity = null;
         this.isOnline = navigator.onLine;
-        this.apiUrl = '/api/habits';
+        // Use relative URL so it works both locally and on Vercel
+        this.apiUrl = window.location.hostname === 'localhost' ? 'http://localhost:3000/api/habits' : '/api/habits';
         
         this.init();
     }
@@ -78,6 +79,8 @@ class HabitTracker {
             throw new Error('Offline');
         }
         
+        console.log(`Making API call: ${method} to ${this.apiUrl}`, data);
+        
         const options = {
             method,
             headers: {
@@ -91,6 +94,8 @@ class HabitTracker {
         
         const response = await fetch(this.apiUrl, options);
         const result = await response.json();
+        
+        console.log('API response:', result);
         
         if (!result.success) {
             throw new Error(result.error || 'API call failed');
@@ -130,6 +135,7 @@ class HabitTracker {
                 const result = await this.apiCall('GET');
                 this.activities = result.activities || [];
                 this.saveActivitiesLocal(); // Sync to local storage
+                console.log('Loaded activities from server:', this.activities.length);
             } else {
                 throw new Error('Offline');
             }
