@@ -1,7 +1,9 @@
-// Simple in-memory storage for demo (in production, use a database)
-let activities = [];
+import { neon } from '@neondatabase/serverless';
 
-export default function handler(req, res) {
+// Initialize database connection
+const sql = neon(process.env.DATABASE_URL);
+
+export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -17,7 +19,14 @@ export default function handler(req, res) {
 
     if (req.method === 'GET') {
       // Get all activities
-      console.log('Returning activities:', activities);
+      const activities = await sql`
+        SELECT id, date, water, protein, exercise, 
+               created_at as timestamp
+        FROM activities 
+        ORDER BY date DESC
+      `;
+      
+      console.log('Returning activities from database:', activities.length);
       res.status(200).json({ success: true, activities });
       
     } else if (req.method === 'POST') {
@@ -28,17 +37,38 @@ export default function handler(req, res) {
         return res.status(400).json({ success: false, error: 'Activity data required' });
       }
       
-      const newActivity = {
-        ...activity,
-        id: Date.now(),
-        timestamp: new Date().toISOString()
-      };
+      const { date, water = 0, protein = 0, exercise = 0 } = activity;
       
-      activities.push(newActivity);
-      console.log('Added activity:', newActivity);
-      console.log('Total activities:', activities.length);
+      if (!date) {
+        return res.status(400).json({ success: false, error: 'Date is required' });
+      }
       
-      res.status(200).json({ success: true, activity: newActivity });
+      // Check if activity for this date already exists
+      const existing = await sql`
+        SELECT id FROM activities WHERE date = ${date}
+      `;
+      
+      let result;
+      if (existing.length > 0) {
+        // Update existing activity
+        result = await sql`
+          UPDATE activities 
+          SET water = ${water}, protein = ${protein}, exercise = ${exercise},
+              updated_at = CURRENT_TIMESTAMP
+          WHERE date = ${date}
+          RETURNING id, date, water, protein, exercise, created_at as timestamp
+        `;
+      } else {
+        // Insert new activity
+        result = await sql`
+          INSERT INTO activities (date, water, protein, exercise)
+          VALUES (${date}, ${water}, ${protein}, ${exercise})
+          RETURNING id, date, water, protein, exercise, created_at as timestamp
+        `;
+      }
+      
+      console.log('Saved activity:', result[0]);
+      res.status(200).json({ success: true, activity: result[0] });
       
     } else if (req.method === 'PUT') {
       // Update existing activity
@@ -48,15 +78,21 @@ export default function handler(req, res) {
         return res.status(400).json({ success: false, error: 'Activity ID and data required' });
       }
       
-      const index = activities.findIndex(a => a.id === id);
+      const { water = 0, protein = 0, exercise = 0 } = activity;
       
-      if (index === -1) {
+      const result = await sql`
+        UPDATE activities 
+        SET water = ${water}, protein = ${protein}, exercise = ${exercise},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = ${id}
+        RETURNING id, date, water, protein, exercise, created_at as timestamp
+      `;
+      
+      if (result.length === 0) {
         return res.status(404).json({ success: false, error: 'Activity not found' });
       }
       
-      activities[index] = { ...activity, id, timestamp: activities[index].timestamp };
-      
-      res.status(200).json({ success: true, activity: activities[index] });
+      res.status(200).json({ success: true, activity: result[0] });
       
     } else if (req.method === 'DELETE') {
       // Delete activity
@@ -66,10 +102,12 @@ export default function handler(req, res) {
         return res.status(400).json({ success: false, error: 'Activity ID required' });
       }
       
-      const originalLength = activities.length;
-      activities = activities.filter(a => a.id !== id);
+      const result = await sql`
+        DELETE FROM activities WHERE id = ${id}
+        RETURNING id
+      `;
       
-      if (activities.length === originalLength) {
+      if (result.length === 0) {
         return res.status(404).json({ success: false, error: 'Activity not found' });
       }
       

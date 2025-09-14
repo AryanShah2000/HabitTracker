@@ -7,9 +7,15 @@
     "dev": "python -m http.server 8000",
     "build": "echo 'No build step required'"
   },
-  "dependencies": {},
-  "devDependencies": {},
-  "keywords": ["habit", "tracker", "vanilla-js", "progressive-web-app"],
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.1"
+  },
+  "keywords": [
+    "habit",
+    "tracker",
+    "vanilla-js",
+    "progressive-web-app"
+  ],
   "author": "Your Name",
   "license": "MIT"
 }
