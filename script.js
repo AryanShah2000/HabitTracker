@@ -556,8 +556,8 @@ class HabitTracker {
                     <div class="activity-details">${date} • ${activity.amount} ${goal.unit}</div>
                 </div>
                 <div class="activity-actions">
-                    <button class="edit-btn" onclick="habitTracker.editActivity(${activity.id})">Edit</button>
-                    <button class="delete-btn" onclick="habitTracker.deleteActivity(${activity.id})">Delete</button>
+                    <button class="edit-btn" onclick="habitTracker.editActivity('${activity.id}')">Edit</button>
+                    <button class="delete-btn" onclick="habitTracker.deleteActivity('${activity.id}')">Delete</button>
                 </div>
             `;
             

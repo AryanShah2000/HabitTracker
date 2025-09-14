@@ -150,21 +150,49 @@ module.exports = async function handler(req, res) {
       res.status(200).json({ success: true, activity: result[0] });
       
     } else if (req.method === 'DELETE') {
-      // Delete activity
+      // Delete activity (decrement goal counter)
       const { id } = req.body;
       
       if (!id) {
         return res.status(400).json({ success: false, error: 'Activity ID required' });
       }
       
-      const result = await sql`
-        DELETE FROM activities WHERE id = ${id}
-        RETURNING id
+      // Parse the frontend ID format: "dbId-goal-timestamp"
+      const parts = id.split('-');
+      if (parts.length < 2) {
+        return res.status(400).json({ success: false, error: 'Invalid activity ID format' });
+      }
+      
+      const dbId = parts[0];
+      const goal = parts[1];
+      
+      // Get current values for this record
+      const current = await sql`
+        SELECT date, water, protein, exercise FROM activities WHERE id = ${dbId}
       `;
       
-      if (result.length === 0) {
+      if (current.length === 0) {
         return res.status(404).json({ success: false, error: 'Activity not found' });
       }
+      
+      let { water, protein, exercise } = current[0];
+      
+      // Decrement the appropriate goal (but don't go below 0)
+      if (goal === 'water' && water > 0) water -= 1;
+      else if (goal === 'protein' && protein > 0) protein -= 1;
+      else if (goal === 'exercise' && exercise > 0) exercise -= 1;
+      else {
+        return res.status(400).json({ success: false, error: 'Cannot decrement: goal is already at 0' });
+      }
+      
+      // Update the database
+      const result = await sql`
+        UPDATE activities 
+        SET water = ${water}, protein = ${protein}, exercise = ${exercise},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = ${dbId}
+        RETURNING id
+      `;
       
       res.status(200).json({ success: true });
       
