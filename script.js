@@ -27,7 +27,7 @@ class HabitTracker {
         this.renderCalendar();
         
         // Set today's date as default in the form
-        document.getElementById('dateInput').value = this.formatDate(this.currentDate);
+        document.getElementById('dateInput').value = this.formatDate(this.selectedDate);
     }
     
     setupOnlineListener() {
@@ -169,7 +169,7 @@ class HabitTracker {
     }
     
     updateCurrentDate() {
-        document.getElementById('currentDate').textContent = this.formatDisplayDate(this.currentDate);
+        document.getElementById('currentDate').textContent = this.formatDisplayDate(this.selectedDate);
     }
     
     // Progress Calculation
@@ -312,6 +312,11 @@ class HabitTracker {
         slider.value = 0;
         document.getElementById('sliderValue').textContent = `0 ${goalData.unit}`;
         
+        // Update slider listener to show correct unit
+        slider.oninput = (e) => {
+            document.getElementById('sliderValue').textContent = `${e.target.value} ${goalData.unit}`;
+        };
+        
         document.getElementById('quickAddModal').classList.add('show');
     }
     
@@ -416,8 +421,8 @@ class HabitTracker {
             if (e.target.id === 'quickAddModal') this.hideQuickAddModal();
         });
         
-        document.getElementById('quickAddSubmit').addEventListener('click', () => {
-            this.submitQuickAdd();
+        document.getElementById('quickAddSubmit').addEventListener('click', async () => {
+            await this.submitQuickAdd();
         });
         
         // Slider input
@@ -426,8 +431,7 @@ class HabitTracker {
         
         slider.addEventListener('input', (e) => {
             const value = e.target.value;
-            const unit = this.currentQuickAddGoal ? this.goals[this.currentQuickAddGoal].unit : '';
-            sliderValue.textContent = `${value} ${unit}`;
+            sliderValue.textContent = `${value}`;
         });
     }
     
@@ -435,7 +439,7 @@ class HabitTracker {
     showLogModal() {
         this.editingActivity = null;
         document.getElementById('logForm').reset();
-        document.getElementById('dateInput').value = this.formatDate(this.currentDate);
+        document.getElementById('dateInput').value = this.formatDate(this.selectedDate);
         document.getElementById('logModal').classList.add('show');
         document.querySelector('#logModal .modal-header h3').textContent = 'Log Activity';
     }
