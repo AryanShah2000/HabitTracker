@@ -1,4 +1,4 @@
-const CACHE_NAME = 'habit-tracker-v1';
+const CACHE_NAME = 'habit-tracker-v2'; // Increment version to force cache refresh
 const urlsToCache = [
   '/',
   '/index.html',
@@ -48,8 +48,10 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests and external URLs
-  if (event.request.method !== 'GET' || !event.request.url.startsWith(self.location.origin)) {
+  // Skip non-GET requests, external URLs, and API calls
+  if (event.request.method !== 'GET' || 
+      !event.request.url.startsWith(self.location.origin) ||
+      event.request.url.includes('/api/')) {
     return;
   }
 

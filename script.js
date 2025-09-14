@@ -24,6 +24,7 @@ class HabitTracker {
         this.registerServiceWorker();
         
         this.setupOnlineListener();
+        this.setupVisibilityListener(); // Add visibility listener for cross-device sync
         await this.loadActivities();
         this.updateCurrentDate();
         this.updateProgress();
@@ -90,6 +91,24 @@ class HabitTracker {
         });
     }
     
+    setupVisibilityListener() {
+        // Refresh data when app becomes visible (for cross-device sync)
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && this.isOnline) {
+                console.log('App became visible - refreshing data for cross-device sync');
+                this.syncWithServer();
+            }
+        });
+        
+        // Also refresh when window gains focus
+        window.addEventListener('focus', () => {
+            if (this.isOnline) {
+                console.log('App gained focus - refreshing data');
+                this.syncWithServer();
+            }
+        });
+    }
+    
     updateConnectionStatus() {
         const indicator = document.getElementById('statusIndicator');
         const statusText = indicator.querySelector('.status-text');
@@ -153,13 +172,21 @@ class HabitTracker {
         
         try {
             const result = await this.apiCall('GET');
-            this.activities = result.activities || [];
-            this.saveActivitiesLocal(); // Update local storage
-            this.updateProgress();
-            this.renderCalendar();
+            if (result.activities) {
+                this.activities = result.activities;
+                this.saveActivitiesLocal(); // Update local storage with fresh data
+                this.updateProgress();
+                this.renderCalendar();
+                console.log('Synced with server - updated activities:', this.activities.length);
+            }
         } catch (error) {
             console.log('Sync failed, using local data:', error.message);
         }
+        
+        // Reset status indicator after sync
+        setTimeout(() => {
+            this.updateConnectionStatus();
+        }, 1000);
     }
     
     // Local Storage Management (fallback)
