@@ -26,40 +26,40 @@ module.exports = async function handler(req, res) {
         ORDER BY date DESC
       `;
       
-      // Transform database format to frontend format
+      // Transform database format to frontend format (consolidated entries)
       const activities = [];
       dbActivities.forEach(row => {
         const dateStr = row.date.toISOString().split('T')[0];
         
-        // Add water activities
-        for (let i = 0; i < row.water; i++) {
+        // Add water activity (if any)
+        if (row.water > 0) {
           activities.push({
-            id: `${row.id}-water-${i}`,
+            id: `${row.id}-water`,
             goal: 'water',
             date: dateStr,
-            amount: 1,
+            amount: row.water,
             timestamp: row.timestamp
           });
         }
         
-        // Add protein activities  
-        for (let i = 0; i < row.protein; i++) {
+        // Add protein activity (if any) 
+        if (row.protein > 0) {
           activities.push({
-            id: `${row.id}-protein-${i}`,
+            id: `${row.id}-protein`,
             goal: 'protein',
             date: dateStr,
-            amount: 1,
+            amount: row.protein,
             timestamp: row.timestamp
           });
         }
         
-        // Add exercise activities
-        for (let i = 0; i < row.exercise; i++) {
+        // Add exercise activity (if any)
+        if (row.exercise > 0) {
           activities.push({
-            id: `${row.id}-exercise-${i}`,
+            id: `${row.id}-exercise`,
             goal: 'exercise',
             date: dateStr,
-            amount: 1,
+            amount: row.exercise,
             timestamp: row.timestamp
           });
         }
@@ -114,7 +114,7 @@ module.exports = async function handler(req, res) {
       
       // Return the activity in frontend format
       const savedActivity = {
-        id: `${result[0].id}-${goal}-${Date.now()}`,
+        id: `${result[0].id}-${goal}`,
         goal,
         date,
         amount,
@@ -123,7 +123,6 @@ module.exports = async function handler(req, res) {
       
       console.log('Saved activity:', savedActivity);
       res.status(200).json({ success: true, activity: savedActivity });
-      res.status(200).json({ success: true, activity: result[0] });
       
     } else if (req.method === 'PUT') {
       // Update existing activity
@@ -157,7 +156,7 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ success: false, error: 'Activity ID required' });
       }
       
-      // Parse the frontend ID format: "dbId-goal-timestamp"
+      // Parse the frontend ID format: "dbId-goal"
       const parts = id.split('-');
       if (parts.length < 2) {
         return res.status(400).json({ success: false, error: 'Invalid activity ID format' });
@@ -177,12 +176,12 @@ module.exports = async function handler(req, res) {
       
       let { water, protein, exercise } = current[0];
       
-      // Decrement the appropriate goal (but don't go below 0)
-      if (goal === 'water' && water > 0) water -= 1;
-      else if (goal === 'protein' && protein > 0) protein -= 1;
-      else if (goal === 'exercise' && exercise > 0) exercise -= 1;
+      // Reset the appropriate goal to 0 (since we're deleting the entire entry)
+      if (goal === 'water') water = 0;
+      else if (goal === 'protein') protein = 0;
+      else if (goal === 'exercise') exercise = 0;
       else {
-        return res.status(400).json({ success: false, error: 'Cannot decrement: goal is already at 0' });
+        return res.status(400).json({ success: false, error: 'Invalid goal type' });
       }
       
       // Update the database
