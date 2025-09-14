@@ -18,32 +18,89 @@ module.exports = async function handler(req, res) {
     console.log(`API ${req.method} request:`, req.body);
 
     if (req.method === 'GET') {
-      // Get all activities
-      const activities = await sql`
+      // Get all activities and transform to frontend format
+      const dbActivities = await sql`
         SELECT id, date, water, protein, exercise, 
                created_at as timestamp
         FROM activities 
         ORDER BY date DESC
       `;
       
+      // Transform database format to frontend format
+      const activities = [];
+      dbActivities.forEach(row => {
+        const dateStr = row.date.toISOString().split('T')[0];
+        
+        // Add water activities
+        for (let i = 0; i < row.water; i++) {
+          activities.push({
+            id: `${row.id}-water-${i}`,
+            goal: 'water',
+            date: dateStr,
+            amount: 1,
+            timestamp: row.timestamp
+          });
+        }
+        
+        // Add protein activities  
+        for (let i = 0; i < row.protein; i++) {
+          activities.push({
+            id: `${row.id}-protein-${i}`,
+            goal: 'protein',
+            date: dateStr,
+            amount: 1,
+            timestamp: row.timestamp
+          });
+        }
+        
+        // Add exercise activities
+        for (let i = 0; i < row.exercise; i++) {
+          activities.push({
+            id: `${row.id}-exercise-${i}`,
+            goal: 'exercise',
+            date: dateStr,
+            amount: 1,
+            timestamp: row.timestamp
+          });
+        }
+      });
+      
       console.log('Returning activities from database:', activities.length);
       res.status(200).json({ success: true, activities });
       
     } else if (req.method === 'POST') {
-      // Add new activity
+      // Add new activity from frontend format
       const { activity } = req.body;
       
       if (!activity) {
         return res.status(400).json({ success: false, error: 'Activity data required' });
       }
       
-      const { date, water = 0, protein = 0, exercise = 0 } = activity;
+      const { date, goal, amount = 1 } = activity;
       
-      if (!date) {
-        return res.status(400).json({ success: false, error: 'Date is required' });
+      if (!date || !goal) {
+        return res.status(400).json({ success: false, error: 'Date and goal are required' });
       }
       
-      // Use UPSERT (INSERT ... ON CONFLICT) to handle existing records
+      // Get current values for this date
+      const current = await sql`
+        SELECT water, protein, exercise FROM activities WHERE date = ${date}
+      `;
+      
+      let water = 0, protein = 0, exercise = 0;
+      
+      if (current.length > 0) {
+        water = current[0].water;
+        protein = current[0].protein;
+        exercise = current[0].exercise;
+      }
+      
+      // Update the appropriate goal
+      if (goal === 'water') water += amount;
+      else if (goal === 'protein') protein += amount;
+      else if (goal === 'exercise') exercise += amount;
+      
+      // Use UPSERT to save to database
       const result = await sql`
         INSERT INTO activities (date, water, protein, exercise)
         VALUES (${date}, ${water}, ${protein}, ${exercise})
@@ -55,7 +112,17 @@ module.exports = async function handler(req, res) {
         RETURNING id, date, water, protein, exercise, created_at as timestamp
       `;
       
-      console.log('Saved activity:', result[0]);
+      // Return the activity in frontend format
+      const savedActivity = {
+        id: `${result[0].id}-${goal}-${Date.now()}`,
+        goal,
+        date,
+        amount,
+        timestamp: result[0].timestamp
+      };
+      
+      console.log('Saved activity:', savedActivity);
+      res.status(200).json({ success: true, activity: savedActivity });
       res.status(200).json({ success: true, activity: result[0] });
       
     } else if (req.method === 'PUT') {
