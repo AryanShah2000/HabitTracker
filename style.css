@@ -1,0 +1,506 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f8f9fa;
+    color: #2d3748;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 8px;
+}
+
+.date-display {
+    font-size: 1rem;
+    color: #718096;
+    font-weight: 500;
+}
+
+.status-indicator {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: #718096;
+}
+
+.status-indicator.online .status-text {
+    color: #38a169;
+}
+
+.status-indicator.offline .status-text {
+    color: #e53e3e;
+}
+
+.status-indicator.syncing .status-text {
+    color: #d69e2e;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Progress Section */
+.progress-section {
+    margin-bottom: 30px;
+}
+
+.goal-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.goal-card:hover {
+    transform: translateY(-2px);
+}
+
+.goal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.goal-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.goal-progress {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    background-color: #e53e3e; /* Red by default */
+    width: 0%;
+}
+
+/* Progress bar color states */
+.progress-fill.low {
+    background-color: #e53e3e; /* Red: 0-33% */
+}
+
+.progress-fill.medium {
+    background-color: #d69e2e; /* Yellow: 34-66% */
+}
+
+.progress-fill.high {
+    background-color: #38a169; /* Green: 67-100% */
+}
+
+.progress-fill.complete {
+    background-color: #2f855a; /* Dark green: 100%+ */
+}
+
+/* Action Section */
+.action-section {
+    margin-bottom: 30px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.primary-btn, .secondary-btn {
+    flex: 1;
+    min-width: 140px;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.primary-btn {
+    background-color: #4299e1;
+    color: white;
+}
+
+.primary-btn:hover {
+    background-color: #3182ce;
+    transform: translateY(-1px);
+}
+
+.secondary-btn {
+    background-color: white;
+    color: #4a5568;
+    border: 2px solid #e2e8f0;
+}
+
+.secondary-btn:hover {
+    background-color: #f7fafc;
+    border-color: #cbd5e0;
+}
+
+/* Calendar Section */
+.calendar-section {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.calendar-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #718096;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+    background-color: #f7fafc;
+    color: #4a5568;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #f7fafc;
+    color: #a0aec0;
+}
+
+.calendar-day.current-month {
+    color: #4a5568;
+    background-color: #e2e8f0;
+}
+
+.calendar-day.today {
+    border: 2px solid #4299e1;
+    font-weight: 700;
+}
+
+.calendar-day.no-goals {
+    background-color: #fed7d7;
+    color: #c53030;
+}
+
+.calendar-day.partial-goals {
+    background-color: #fef5e7;
+    color: #d69e2e;
+}
+
+.calendar-day.all-goals {
+    background-color: #c6f6d5;
+    color: #2f855a;
+}
+
+.calendar-day:hover {
+    transform: scale(1.1);
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    width: 90%;
+    max-width: 400px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideIn 0.3s ease;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #a0aec0;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+    background-color: #f7fafc;
+    color: #4a5568;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #4299e1;
+}
+
+/* Activity List */
+.activity-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 8px;
+    background-color: #f7fafc;
+    border-radius: 8px;
+    border-left: 4px solid #e2e8f0;
+}
+
+.activity-item.water {
+    border-left-color: #4299e1;
+}
+
+.activity-item.protein {
+    border-left-color: #d69e2e;
+}
+
+.activity-item.exercise {
+    border-left-color: #38a169;
+}
+
+.activity-info {
+    flex: 1;
+}
+
+.activity-goal {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.activity-details {
+    font-size: 0.9rem;
+    color: #718096;
+}
+
+.activity-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.edit-btn, .delete-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.edit-btn {
+    background-color: #4299e1;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #3182ce;
+}
+
+.delete-btn {
+    background-color: #e53e3e;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c53030;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { 
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 16px;
+    }
+    
+    header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .goal-card {
+        padding: 16px;
+    }
+    
+    .action-section {
+        flex-direction: column;
+    }
+    
+    .calendar-grid {
+        gap: 1px;
+    }
+    
+    .calendar-day {
+        font-size: 0.7rem;
+    }
+    
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+    
+    .activity-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .activity-actions {
+        align-self: stretch;
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 12px;
+    }
+    
+    header h1 {
+        font-size: 1.6rem;
+    }
+    
+    .goal-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .calendar-day {
+        font-size: 0.6rem;
+    }
+}
