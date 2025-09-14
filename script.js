@@ -392,13 +392,23 @@ class HabitTracker {
         document.getElementById('quickAddLabel').textContent = `Amount (${goalData.unit}):`;
         
         const slider = document.getElementById('quickAddSlider');
-        slider.max = goalData.target * 2; // Allow adding up to 2x the daily goal
-        slider.value = 0;
-        document.getElementById('sliderValue').textContent = `0 ${goalData.unit}`;
+        const valueInput = document.getElementById('sliderValue');
         
-        // Update slider listener to show correct unit
+        slider.max = goalData.target * 2; // Allow adding up to 2x the daily goal
+        valueInput.max = goalData.target * 2;
+        slider.value = 0;
+        valueInput.value = 0;
+        
+        // Update slider listener to sync with text input
         slider.oninput = (e) => {
-            document.getElementById('sliderValue').textContent = `${e.target.value} ${goalData.unit}`;
+            valueInput.value = e.target.value;
+        };
+        
+        // Update text input listener to sync with slider
+        valueInput.oninput = (e) => {
+            const value = Math.max(0, Math.min(parseFloat(e.target.value) || 0, goalData.target * 2));
+            slider.value = value;
+            valueInput.value = value;
         };
         
         document.getElementById('quickAddModal').classList.add('show');
@@ -410,7 +420,7 @@ class HabitTracker {
     }
     
     async submitQuickAdd() {
-        const amount = parseFloat(document.getElementById('quickAddSlider').value);
+        const amount = parseFloat(document.getElementById('sliderValue').value);
         if (amount <= 0) return;
         
         try {
@@ -516,15 +526,6 @@ class HabitTracker {
         
         document.getElementById('quickAddSubmit').addEventListener('click', async () => {
             await this.submitQuickAdd();
-        });
-        
-        // Slider input
-        const slider = document.getElementById('quickAddSlider');
-        const sliderValue = document.getElementById('sliderValue');
-        
-        slider.addEventListener('input', (e) => {
-            const value = e.target.value;
-            sliderValue.textContent = `${value}`;
         });
     }
     
