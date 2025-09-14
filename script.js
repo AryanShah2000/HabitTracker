@@ -3,11 +3,12 @@ class HabitTracker {
     constructor() {
         this.goals = {
             water: { name: 'Water', target: 64, unit: 'fl oz', emoji: '💧' },
-            protein: { name: 'Protein', target: 100, unit: 'g', emoji: '🥩' },
+            protein: { name: 'Protein', target: 100, unit: 'g', emoji: '�' },
             exercise: { name: 'Exercise', target: 30, unit: 'min', emoji: '🏃' }
         };
         
         this.currentDate = new Date();
+        this.selectedDate = new Date(); // New property for calendar selection
         this.currentMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
         this.activities = [];
         this.editingActivity = null;
@@ -182,7 +183,7 @@ class HabitTracker {
     updateProgress() {
         Object.keys(this.goals).forEach(goalKey => {
             const goal = this.goals[goalKey];
-            const total = this.getDayTotal(goalKey, this.currentDate);
+            const total = this.getDayTotal(goalKey, this.selectedDate);
             const percentage = Math.min((total / goal.target) * 100, 100);
             
             // Update progress text
@@ -205,6 +206,9 @@ class HabitTracker {
                 fillElement.classList.add('low');
             }
         });
+        
+        // Update date display to show selected date
+        document.getElementById('currentDate').textContent = this.formatDisplayDate(this.selectedDate);
     }
     
     // Goal Achievement Calculation
@@ -274,7 +278,78 @@ class HabitTracker {
                 dayElement.classList.add('today');
             }
             
+            // Highlight selected date
+            if (this.formatDate(dayDate) === this.formatDate(this.selectedDate)) {
+                dayElement.classList.add('selected');
+            }
+            
+            // Add click handler
+            dayElement.addEventListener('click', () => {
+                this.selectDate(dayDate);
+            });
+            
             grid.appendChild(dayElement);
+        }
+    }
+    
+    // Date Selection
+    selectDate(date) {
+        this.selectedDate = new Date(date);
+        this.updateProgress();
+        this.renderCalendar();
+    }
+    
+    // Quick Add Methods
+    showQuickAddModal(goal) {
+        this.currentQuickAddGoal = goal;
+        const goalData = this.goals[goal];
+        
+        document.getElementById('quickAddTitle').textContent = `Quick Add ${goalData.name}`;
+        document.getElementById('quickAddLabel').textContent = `Amount (${goalData.unit}):`;
+        
+        const slider = document.getElementById('quickAddSlider');
+        slider.max = goalData.target * 2; // Allow adding up to 2x the daily goal
+        slider.value = 0;
+        document.getElementById('sliderValue').textContent = `0 ${goalData.unit}`;
+        
+        document.getElementById('quickAddModal').classList.add('show');
+    }
+    
+    hideQuickAddModal() {
+        document.getElementById('quickAddModal').classList.remove('show');
+        this.currentQuickAddGoal = null;
+    }
+    
+    async submitQuickAdd() {
+        const amount = parseFloat(document.getElementById('quickAddSlider').value);
+        if (amount <= 0) return;
+        
+        try {
+            const activity = {
+                id: Date.now(),
+                goal: this.currentQuickAddGoal,
+                date: this.formatDate(this.selectedDate),
+                amount,
+                timestamp: new Date().toISOString()
+            };
+            
+            if (this.isOnline) {
+                const result = await this.apiCall('POST', { activity });
+                this.activities.push(result.activity);
+            } else {
+                this.activities.push(activity);
+            }
+            
+            await this.saveActivities();
+            this.updateProgress();
+            this.renderCalendar();
+            this.hideQuickAddModal();
+            
+        } catch (error) {
+            console.log('Failed to save to server, saved locally:', error.message);
+            this.updateProgress();
+            this.renderCalendar();
+            this.hideQuickAddModal();
         }
     }
     
@@ -321,6 +396,38 @@ class HabitTracker {
         document.getElementById('nextMonth').addEventListener('click', () => {
             this.currentMonth.setMonth(this.currentMonth.getMonth() + 1);
             this.renderCalendar();
+        });
+        
+        // Quick add buttons
+        document.querySelectorAll('.quick-add-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const goal = btn.getAttribute('data-goal');
+                this.showQuickAddModal(goal);
+            });
+        });
+        
+        // Quick add modal controls
+        document.getElementById('closeQuickAddModal').addEventListener('click', () => {
+            this.hideQuickAddModal();
+        });
+        
+        document.getElementById('quickAddModal').addEventListener('click', (e) => {
+            if (e.target.id === 'quickAddModal') this.hideQuickAddModal();
+        });
+        
+        document.getElementById('quickAddSubmit').addEventListener('click', () => {
+            this.submitQuickAdd();
+        });
+        
+        // Slider input
+        const slider = document.getElementById('quickAddSlider');
+        const sliderValue = document.getElementById('sliderValue');
+        
+        slider.addEventListener('input', (e) => {
+            const value = e.target.value;
+            const unit = this.currentQuickAddGoal ? this.goals[this.currentQuickAddGoal].unit : '';
+            sliderValue.textContent = `${value} ${unit}`;
         });
     }
     
