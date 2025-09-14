@@ -1,43 +1,5 @@
-import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { join } from 'path';
-
-const DATA_FILE = join(process.cwd(), 'data', 'habits.json');
-
-// Ensure data directory exists
-function ensureDataDirectory() {
-  const dataDir = join(process.cwd(), 'data');
-  if (!existsSync(dataDir)) {
-    const fs = require('fs');
-    fs.mkdirSync(dataDir, { recursive: true });
-  }
-}
-
-// Read activities from JSON file
-function readActivities() {
-  ensureDataDirectory();
-  if (!existsSync(DATA_FILE)) {
-    return [];
-  }
-  try {
-    const data = readFileSync(DATA_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Error reading activities:', error);
-    return [];
-  }
-}
-
-// Write activities to JSON file
-function writeActivities(activities) {
-  ensureDataDirectory();
-  try {
-    writeFileSync(DATA_FILE, JSON.stringify(activities, null, 2));
-    return true;
-  } catch (error) {
-    console.error('Error writing activities:', error);
-    return false;
-  }
-}
+// Simple in-memory storage for demo (in production, use a database)
+let activities = [];
 
 export default function handler(req, res) {
   // Enable CORS
@@ -51,9 +13,11 @@ export default function handler(req, res) {
   }
 
   try {
+    console.log(`API ${req.method} request:`, req.body);
+
     if (req.method === 'GET') {
       // Get all activities
-      const activities = readActivities();
+      console.log('Returning activities:', activities);
       res.status(200).json({ success: true, activities });
       
     } else if (req.method === 'POST') {
@@ -64,19 +28,17 @@ export default function handler(req, res) {
         return res.status(400).json({ success: false, error: 'Activity data required' });
       }
       
-      const activities = readActivities();
-      activities.push({
+      const newActivity = {
         ...activity,
         id: Date.now(),
         timestamp: new Date().toISOString()
-      });
+      };
       
-      const success = writeActivities(activities);
-      if (success) {
-        res.status(200).json({ success: true, activity: activities[activities.length - 1] });
-      } else {
-        res.status(500).json({ success: false, error: 'Failed to save activity' });
-      }
+      activities.push(newActivity);
+      console.log('Added activity:', newActivity);
+      console.log('Total activities:', activities.length);
+      
+      res.status(200).json({ success: true, activity: newActivity });
       
     } else if (req.method === 'PUT') {
       // Update existing activity
@@ -86,7 +48,6 @@ export default function handler(req, res) {
         return res.status(400).json({ success: false, error: 'Activity ID and data required' });
       }
       
-      const activities = readActivities();
       const index = activities.findIndex(a => a.id === id);
       
       if (index === -1) {
@@ -95,12 +56,7 @@ export default function handler(req, res) {
       
       activities[index] = { ...activity, id, timestamp: activities[index].timestamp };
       
-      const success = writeActivities(activities);
-      if (success) {
-        res.status(200).json({ success: true, activity: activities[index] });
-      } else {
-        res.status(500).json({ success: false, error: 'Failed to update activity' });
-      }
+      res.status(200).json({ success: true, activity: activities[index] });
       
     } else if (req.method === 'DELETE') {
       // Delete activity
@@ -110,19 +66,14 @@ export default function handler(req, res) {
         return res.status(400).json({ success: false, error: 'Activity ID required' });
       }
       
-      const activities = readActivities();
-      const filteredActivities = activities.filter(a => a.id !== id);
+      const originalLength = activities.length;
+      activities = activities.filter(a => a.id !== id);
       
-      if (filteredActivities.length === activities.length) {
+      if (activities.length === originalLength) {
         return res.status(404).json({ success: false, error: 'Activity not found' });
       }
       
-      const success = writeActivities(filteredActivities);
-      if (success) {
-        res.status(200).json({ success: true });
-      } else {
-        res.status(500).json({ success: false, error: 'Failed to delete activity' });
-      }
+      res.status(200).json({ success: true });
       
     } else {
       res.status(405).json({ success: false, error: 'Method not allowed' });
@@ -130,6 +81,6 @@ export default function handler(req, res) {
     
   } catch (error) {
     console.error('API Error:', error);
-    res.status(500).json({ success: false, error: 'Internal server error' });
+    res.status(500).json({ success: false, error: error.message || 'Internal server error' });
   }
 }
