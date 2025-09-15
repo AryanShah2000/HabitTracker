@@ -21,6 +21,7 @@ module.exports = async function handler(req, res) {
       // Get all activities and transform to frontend format
       const dbActivities = await sql`
         SELECT id, date, water, protein, exercise, 
+               water_desc, protein_desc, exercise_desc,
                created_at as timestamp
         FROM activities 
         ORDER BY date DESC
@@ -38,6 +39,7 @@ module.exports = async function handler(req, res) {
             goal: 'water',
             date: dateStr,
             amount: row.water,
+            description: row.water_desc || '',
             timestamp: row.timestamp
           });
         }
@@ -49,6 +51,7 @@ module.exports = async function handler(req, res) {
             goal: 'protein',
             date: dateStr,
             amount: row.protein,
+            description: row.protein_desc || '',
             timestamp: row.timestamp
           });
         }
@@ -60,6 +63,7 @@ module.exports = async function handler(req, res) {
             goal: 'exercise',
             date: dateStr,
             amount: row.exercise,
+            description: row.exercise_desc || '',
             timestamp: row.timestamp
           });
         }
@@ -76,7 +80,7 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ success: false, error: 'Activity data required' });
       }
       
-      const { date, goal, amount = 1 } = activity;
+      const { date, goal, amount = 1, description = '' } = activity;
       
       if (!date || !goal) {
         return res.status(400).json({ success: false, error: 'Date and goal are required' });
@@ -84,32 +88,47 @@ module.exports = async function handler(req, res) {
       
       // Get current values for this date
       const current = await sql`
-        SELECT water, protein, exercise FROM activities WHERE date = ${date}
+        SELECT water, protein, exercise, water_desc, protein_desc, exercise_desc 
+        FROM activities WHERE date = ${date}
       `;
       
       let water = 0, protein = 0, exercise = 0;
+      let waterDesc = '', proteinDesc = '', exerciseDesc = '';
       
       if (current.length > 0) {
         water = current[0].water;
         protein = current[0].protein;
         exercise = current[0].exercise;
+        waterDesc = current[0].water_desc || '';
+        proteinDesc = current[0].protein_desc || '';
+        exerciseDesc = current[0].exercise_desc || '';
       }
       
-      // Update the appropriate goal
-      if (goal === 'water') water += amount;
-      else if (goal === 'protein') protein += amount;
-      else if (goal === 'exercise') exercise += amount;
+      // Update the appropriate goal and description
+      if (goal === 'water') {
+        water += amount;
+        waterDesc = description; // Replace with new description
+      } else if (goal === 'protein') {
+        protein += amount;
+        proteinDesc = description; // Replace with new description
+      } else if (goal === 'exercise') {
+        exercise += amount;
+        exerciseDesc = description; // Replace with new description
+      }
       
       // Use UPSERT to save to database
       const result = await sql`
-        INSERT INTO activities (date, water, protein, exercise)
-        VALUES (${date}, ${water}, ${protein}, ${exercise})
+        INSERT INTO activities (date, water, protein, exercise, water_desc, protein_desc, exercise_desc)
+        VALUES (${date}, ${water}, ${protein}, ${exercise}, ${waterDesc}, ${proteinDesc}, ${exerciseDesc})
         ON CONFLICT (date) DO UPDATE SET 
           water = EXCLUDED.water,
           protein = EXCLUDED.protein,
           exercise = EXCLUDED.exercise,
+          water_desc = EXCLUDED.water_desc,
+          protein_desc = EXCLUDED.protein_desc,
+          exercise_desc = EXCLUDED.exercise_desc,
           updated_at = CURRENT_TIMESTAMP
-        RETURNING id, date, water, protein, exercise, created_at as timestamp
+        RETURNING id, date, water, protein, exercise, water_desc, protein_desc, exercise_desc, created_at as timestamp
       `;
       
       // Return the activity in frontend format
@@ -118,6 +137,9 @@ module.exports = async function handler(req, res) {
         goal,
         date,
         amount,
+        description: goal === 'water' ? result[0].water_desc : 
+                    goal === 'protein' ? result[0].protein_desc : 
+                    result[0].exercise_desc,
         timestamp: result[0].timestamp
       };
       

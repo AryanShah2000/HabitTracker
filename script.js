@@ -421,11 +421,13 @@ class HabitTracker {
     
     hideQuickAddModal() {
         document.getElementById('quickAddModal').classList.remove('show');
+        document.getElementById('quickAddDescription').value = '';
         this.currentQuickAddGoal = null;
     }
     
     async submitQuickAdd() {
         const amount = parseFloat(document.getElementById('sliderValue').value);
+        const description = document.getElementById('quickAddDescription').value.trim();
         if (amount <= 0) return;
         
         try {
@@ -434,6 +436,7 @@ class HabitTracker {
                 goal: this.currentQuickAddGoal,
                 date: this.formatDate(this.selectedDate),
                 amount,
+                description,
                 timestamp: new Date().toISOString()
             };
             
@@ -457,6 +460,7 @@ class HabitTracker {
                 goal: this.currentQuickAddGoal,
                 date: this.formatDate(this.selectedDate),
                 amount,
+                description,
                 timestamp: new Date().toISOString()
             });
             this.saveActivitiesLocal();
@@ -539,6 +543,7 @@ class HabitTracker {
         this.editingActivity = null;
         document.getElementById('logForm').reset();
         document.getElementById('dateInput').value = this.formatDate(this.selectedDate);
+        document.getElementById('descriptionInput').value = '';
         document.getElementById('logModal').classList.add('show');
         document.querySelector('#logModal .modal-header h3').textContent = 'Log Activity';
     }
@@ -562,6 +567,7 @@ class HabitTracker {
         const goal = document.getElementById('goalSelect').value;
         const date = document.getElementById('dateInput').value;
         const amount = parseFloat(document.getElementById('amountInput').value);
+        const description = document.getElementById('descriptionInput').value.trim();
         
         if (!goal || !date || !amount) return;
         
@@ -570,7 +576,7 @@ class HabitTracker {
                 // Update existing activity
                 const index = this.activities.findIndex(a => a.id === this.editingActivity.id);
                 if (index !== -1) {
-                    this.activities[index] = { ...this.editingActivity, goal, date, amount };
+                    this.activities[index] = { ...this.editingActivity, goal, date, amount, description };
                     
                     if (this.isOnline) {
                         await this.apiCall('PUT', { 
@@ -586,6 +592,7 @@ class HabitTracker {
                     goal,
                     date,
                     amount,
+                    description,
                     timestamp: new Date().toISOString()
                 };
                 
@@ -633,11 +640,13 @@ class HabitTracker {
             
             const goal = this.goals[activity.goal];
             const date = new Date(activity.date).toLocaleDateString();
+            const description = activity.description ? `<div class="activity-description">${activity.description}</div>` : '';
             
             activityElement.innerHTML = `
                 <div class="activity-info">
                     <div class="activity-goal">${goal.emoji} ${goal.name}</div>
                     <div class="activity-details">${date} • ${activity.amount} ${goal.unit}</div>
+                    ${description}
                 </div>
                 <div class="activity-actions">
                     <button class="edit-btn" onclick="habitTracker.editActivity('${activity.id}')">Edit</button>
@@ -657,6 +666,7 @@ class HabitTracker {
         document.getElementById('goalSelect').value = activity.goal;
         document.getElementById('dateInput').value = activity.date;
         document.getElementById('amountInput').value = activity.amount;
+        document.getElementById('descriptionInput').value = activity.description || '';
         
         document.querySelector('#logModal .modal-header h3').textContent = 'Edit Activity';
         this.hideActivityModal();
