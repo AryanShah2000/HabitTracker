@@ -16,6 +16,9 @@ async function setupDatabase() {
         water INTEGER DEFAULT 0,
         protein INTEGER DEFAULT 0,
         exercise INTEGER DEFAULT 0,
+        water_desc TEXT,
+        protein_desc TEXT,
+        exercise_desc TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
