@@ -237,15 +237,39 @@ class HabitTracker {
     }
 
     logout() {
+        console.log('Logout initiated...');
+        
+        // Clear all authentication data
         this.currentUser = null;
         this.authToken = null;
         this.activities = [];
-        localStorage.removeItem('authToken');
         
-        // Show auth screen
+        // Clear localStorage completely
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('activities');
+        localStorage.clear(); // Clear everything just to be safe
+        
+        console.log('Cleared authentication data and localStorage');
+        
+        // Clear any session storage as well
+        sessionStorage.clear();
+        
+        // Hide authenticated content and show auth screen
         document.getElementById('authButtons').style.display = 'flex';
         document.getElementById('userControls').style.display = 'none';
-        this.showAuthScreen();
+        document.getElementById('authRequired').style.display = 'flex';
+        document.getElementById('appContainer').style.display = 'none';
+        
+        // Hide any open modals
+        this.hideAuthModals();
+        
+        console.log('Logout complete - showing auth screen');
+        
+        // Force page reload to ensure clean state
+        setTimeout(() => {
+            window.location.reload();
+        }, 100);
     }
 
     hideAuthModals() {
@@ -469,9 +493,16 @@ class HabitTracker {
         });
 
         // Logout
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            this.logout();
-        });
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                console.log('Logout button clicked');
+                this.logout();
+            });
+            console.log('Logout event listener attached');
+        } else {
+            console.log('Warning: Logout button not found');
+        }
 
         // Close modals when clicking outside
         document.getElementById('loginModal').addEventListener('click', (e) => {
