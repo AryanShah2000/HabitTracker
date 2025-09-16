@@ -39,59 +39,29 @@ module.exports = async function handler(req, res) {
     console.log(`API ${req.method} request for user ${userId}:`, req.body);
 
     if (req.method === 'GET') {
-      // Get all activities for the authenticated user and transform to frontend format
+      // Get all activities for the authenticated user from activity_logs table
       const dbActivities = await sql`
-        SELECT id, date, water, protein, exercise, 
-               created_at as timestamp
-        FROM activities 
+        SELECT id, date, goal, amount, description, created_at as timestamp
+        FROM activity_logs 
         WHERE user_id = ${userId}
-        ORDER BY date DESC
+        ORDER BY date DESC, created_at DESC
       `;
       
-      // Transform database format to frontend format (consolidated entries)
-      const activities = [];
-      dbActivities.forEach(row => {
-        const dateStr = row.date.toISOString().split('T')[0];
-        
-        // Add water activity (if any)
-        if (row.water > 0) {
-          activities.push({
-            id: `${row.id}-water`,
-            goal: 'water',
-            date: dateStr,
-            amount: row.water,
-            timestamp: row.timestamp
-          });
-        }
-        
-        // Add protein activity (if any) 
-        if (row.protein > 0) {
-          activities.push({
-            id: `${row.id}-protein`,
-            goal: 'protein',
-            date: dateStr,
-            amount: row.protein,
-            timestamp: row.timestamp
-          });
-        }
-        
-        // Add exercise activity (if any)
-        if (row.exercise > 0) {
-          activities.push({
-            id: `${row.id}-exercise`,
-            goal: 'exercise',
-            date: dateStr,
-            amount: row.exercise,
-            timestamp: row.timestamp
-          });
-        }
-      });
+      // Transform database format to frontend format
+      const activities = dbActivities.map(row => ({
+        id: row.id.toString(),
+        goal: row.goal,
+        date: row.date.toISOString().split('T')[0],
+        amount: parseFloat(row.amount),
+        description: row.description || '',
+        timestamp: row.timestamp
+      }));
       
-      console.log('Returning activities from database:', activities.length);
+      console.log(`Returning ${activities.length} activities from database for user ${userId}`);
       res.status(200).json({ success: true, activities });
       
     } else if (req.method === 'POST') {
-      // Add new activity from frontend format
+      // Add new activity to activity_logs table
       const { activity } = req.body;
       
       if (!activity) {
@@ -104,55 +74,24 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ success: false, error: 'Date and goal are required' });
       }
       
-      // Get current values for this date and user
-      const current = await sql`
-        SELECT water, protein, exercise FROM activities 
-        WHERE date = ${date} AND user_id = ${userId}
-      `;
-      
-      let water = 0, protein = 0, exercise = 0;
-      
-      if (current.length > 0) {
-        water = current[0].water;
-        protein = current[0].protein;
-        exercise = current[0].exercise;
-      }
-      
-      // Update the appropriate goal
-      if (goal === 'water') water += amount;
-      else if (goal === 'protein') protein += amount;
-      else if (goal === 'exercise') exercise += amount;
-      
-      // Use UPSERT to save to database
+      // Insert into activity_logs table
       const result = await sql`
-        INSERT INTO activities (user_id, date, water, protein, exercise)
-        VALUES (${userId}, ${date}, ${water}, ${protein}, ${exercise})
-        ON CONFLICT (user_id, date) DO UPDATE SET 
-          water = EXCLUDED.water,
-          protein = EXCLUDED.protein,
-          exercise = EXCLUDED.exercise,
-          updated_at = CURRENT_TIMESTAMP
-        RETURNING id, date, water, protein, exercise, created_at as timestamp
+        INSERT INTO activity_logs (user_id, date, goal, amount, description, created_at)
+        VALUES (${userId}, ${date}, ${goal}, ${amount}, ${description}, CURRENT_TIMESTAMP)
+        RETURNING id, date, goal, amount, description, created_at as timestamp
       `;
-      
-      // If there's a description, save it as an individual activity log
-      if (description) {
-        await sql`
-          INSERT INTO activity_logs (user_id, date, goal, amount, description, created_at)
-          VALUES (${userId}, ${date}, ${goal}, ${amount}, ${description}, CURRENT_TIMESTAMP)
-        `;
-      }
       
       // Return the activity in frontend format
       const savedActivity = {
-        id: `${result[0].id}-${goal}`,
-        goal,
-        date,
-        amount,
+        id: result[0].id.toString(),
+        goal: result[0].goal,
+        date: result[0].date.toISOString().split('T')[0],
+        amount: parseFloat(result[0].amount),
+        description: result[0].description || '',
         timestamp: result[0].timestamp
       };
       
-      console.log('Saved activity:', savedActivity);
+      console.log('Saved activity to activity_logs:', savedActivity);
       res.status(200).json({ success: true, activity: savedActivity });
       
     } else if (req.method === 'PUT') {
@@ -180,50 +119,25 @@ module.exports = async function handler(req, res) {
       res.status(200).json({ success: true, activity: result[0] });
       
     } else if (req.method === 'DELETE') {
-      // Delete activity (decrement goal counter)
+      // Delete activity from activity_logs table
       const { id } = req.body;
       
       if (!id) {
         return res.status(400).json({ success: false, error: 'Activity ID required' });
       }
       
-      // Parse the frontend ID format: "dbId-goal"
-      const parts = id.split('-');
-      if (parts.length < 2) {
-        return res.status(400).json({ success: false, error: 'Invalid activity ID format' });
-      }
-      
-      const dbId = parts[0];
-      const goal = parts[1];
-      
-      // Get current values for this record
-      const current = await sql`
-        SELECT date, water, protein, exercise FROM activities WHERE id = ${dbId}
-      `;
-      
-      if (current.length === 0) {
-        return res.status(404).json({ success: false, error: 'Activity not found' });
-      }
-      
-      let { water, protein, exercise } = current[0];
-      
-      // Reset the appropriate goal to 0 (since we're deleting the entire entry)
-      if (goal === 'water') water = 0;
-      else if (goal === 'protein') protein = 0;
-      else if (goal === 'exercise') exercise = 0;
-      else {
-        return res.status(400).json({ success: false, error: 'Invalid goal type' });
-      }
-      
-      // Update the database
+      // Delete the specific activity log entry
       const result = await sql`
-        UPDATE activities 
-        SET water = ${water}, protein = ${protein}, exercise = ${exercise},
-            updated_at = CURRENT_TIMESTAMP
-        WHERE id = ${dbId}
+        DELETE FROM activity_logs 
+        WHERE id = ${id} AND user_id = ${userId}
         RETURNING id
       `;
       
+      if (result.length === 0) {
+        return res.status(404).json({ success: false, error: 'Activity not found' });
+      }
+      
+      console.log(`Deleted activity ${id} for user ${userId}`);
       res.status(200).json({ success: true });
       
     } else {
