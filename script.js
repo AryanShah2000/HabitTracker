@@ -141,6 +141,23 @@ class HabitTracker {
         document.getElementById('authHeader').style.display = 'block';
     }
 
+    setupLogoutButton() {
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            // Remove any existing event listener first
+            logoutBtn.replaceWith(logoutBtn.cloneNode(true));
+            const newLogoutBtn = document.getElementById('logoutBtn');
+            
+            newLogoutBtn.addEventListener('click', () => {
+                console.log('Logout button clicked');
+                this.logout();
+            });
+            console.log('Logout event listener attached successfully');
+        } else {
+            console.log('Warning: Logout button not found when setting up');
+        }
+    }
+
     showMainApp() {
         document.getElementById('authRequired').style.display = 'none';
         document.getElementById('mainApp').style.display = 'block';
@@ -150,6 +167,9 @@ class HabitTracker {
         document.getElementById('authButtons').style.display = 'none';
         document.getElementById('userControls').style.display = 'flex';
         document.getElementById('usernameDisplay').textContent = this.currentUser.username;
+        
+        // Set up logout button now that it's visible
+        this.setupLogoutButton();
     }
 
     async login(username, password) {
@@ -493,17 +513,7 @@ class HabitTracker {
             }
         });
 
-        // Logout
-        const logoutBtn = document.getElementById('logoutBtn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', () => {
-                console.log('Logout button clicked');
-                this.logout();
-            });
-            console.log('Logout event listener attached');
-        } else {
-            console.log('Warning: Logout button not found');
-        }
+        // Note: Logout button is set up in setupLogoutButton() after user controls are shown
 
         // Close modals when clicking outside
         document.getElementById('loginModal').addEventListener('click', (e) => {
