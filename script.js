@@ -288,6 +288,20 @@ class HabitTracker {
                     loginModal.style.zIndex = '1000';
                     loginModal.style.alignItems = 'center';
                     loginModal.style.justifyContent = 'center';
+                    
+                    // Also force the modal content to be visible
+                    const modalContent = loginModal.querySelector('.modal-content');
+                    if (modalContent) {
+                        modalContent.style.display = 'block';
+                        modalContent.style.backgroundColor = 'white';
+                        modalContent.style.padding = '24px';
+                        modalContent.style.borderRadius = '12px';
+                        modalContent.style.maxWidth = '400px';
+                        modalContent.style.width = '90%';
+                        modalContent.style.zIndex = '1001';
+                        console.log('Styled modal content as well');
+                    }
+                    
                     console.log('Added show class and inline styles to login modal');
                 } else {
                     console.log('Login modal not found!');
