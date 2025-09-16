@@ -876,9 +876,8 @@ class HabitTracker {
         
         // Format the date for display
         const displayDate = date.toLocaleDateString('en-US', { 
-            weekday: 'long',
             year: 'numeric', 
-            month: 'long', 
+            month: 'numeric', 
             day: 'numeric' 
         });
         
