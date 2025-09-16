@@ -26,6 +26,8 @@ class HabitTracker {
     }
     
     async init() {
+        console.log('Initializing app...');
+        
         // Register service worker for PWA functionality
         this.registerServiceWorker();
         
@@ -33,15 +35,18 @@ class HabitTracker {
         this.setupVisibilityListener(); // Add visibility listener for cross-device sync
         
         // Check authentication first
+        console.log('Checking authentication...');
         await this.checkAuthentication();
         
         // If not authenticated, show auth screen and setup auth listeners
         if (!this.currentUser) {
+            console.log('User not authenticated, showing auth screen');
             this.showAuthScreen();
             this.setupAuthEventListeners();
             return;
         }
         
+        console.log('User authenticated, initializing main app');
         // User is authenticated, proceed with app initialization
         await this.loadActivities();
         this.updateCurrentDate();
@@ -249,23 +254,49 @@ class HabitTracker {
     }
     
     setupAuthEventListeners() {
-        // Show login modal
-        document.getElementById('showLoginBtn').addEventListener('click', () => {
-            document.getElementById('loginModal').classList.add('show');
-        });
+        console.log('Setting up authentication event listeners...');
         
-        document.getElementById('authRequiredLogin').addEventListener('click', () => {
-            document.getElementById('loginModal').classList.add('show');
-        });
+        // Show login modal
+        const showLoginBtn = document.getElementById('showLoginBtn');
+        const authRequiredLogin = document.getElementById('authRequiredLogin');
+        
+        console.log('showLoginBtn element:', showLoginBtn);
+        console.log('authRequiredLogin element:', authRequiredLogin);
+        
+        if (showLoginBtn) {
+            showLoginBtn.addEventListener('click', () => {
+                console.log('Show login button clicked');
+                document.getElementById('loginModal').classList.add('show');
+            });
+        }
+        
+        if (authRequiredLogin) {
+            authRequiredLogin.addEventListener('click', () => {
+                console.log('Auth required login button clicked');
+                document.getElementById('loginModal').classList.add('show');
+            });
+        }
 
         // Show signup modal
-        document.getElementById('showSignupBtn').addEventListener('click', () => {
-            document.getElementById('signupModal').classList.add('show');
-        });
+        const showSignupBtn = document.getElementById('showSignupBtn');
+        const authRequiredSignup = document.getElementById('authRequiredSignup');
         
-        document.getElementById('authRequiredSignup').addEventListener('click', () => {
-            document.getElementById('signupModal').classList.add('show');
-        });
+        console.log('showSignupBtn element:', showSignupBtn);
+        console.log('authRequiredSignup element:', authRequiredSignup);
+        
+        if (showSignupBtn) {
+            showSignupBtn.addEventListener('click', () => {
+                console.log('Show signup button clicked');
+                document.getElementById('signupModal').classList.add('show');
+            });
+        }
+        
+        if (authRequiredSignup) {
+            authRequiredSignup.addEventListener('click', () => {
+                console.log('Auth required signup button clicked');
+                document.getElementById('signupModal').classList.add('show');
+            });
+        }
 
         // Close modals
         document.getElementById('closeLoginModal').addEventListener('click', () => {
