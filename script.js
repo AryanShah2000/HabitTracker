@@ -33,6 +33,9 @@ class HabitTracker {
         
         // Set today's date as default in the form
         document.getElementById('dateInput').value = this.formatDate(this.selectedDate);
+        
+        // Show daily logs for today by default
+        this.showDailyLogs(this.selectedDate);
     }
     
     async registerServiceWorker() {
@@ -448,6 +451,9 @@ class HabitTracker {
         valueInput.max = goalData.target * 2;
         slider.value = 0;
         valueInput.value = 0;
+        
+        // Clear description field
+        document.getElementById('quickAddDescription').value = '';
         
         // Remove any existing event listeners by cloning elements
         const newSlider = slider.cloneNode(true);
