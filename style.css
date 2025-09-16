@@ -927,6 +927,18 @@ header h1 {
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
+/* Remove number input arrows/spinners */
+.slider-value-input::-webkit-outer-spin-button,
+.slider-value-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.slider-value-input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
 .unit-display {
     color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
@@ -1091,6 +1103,7 @@ header h1 {
 
 .daily-log-item {
     display: flex;
+    justify-content: space-between;
     align-items: flex-start;
     padding: 16px;
     margin-bottom: 12px;
@@ -1164,7 +1177,8 @@ header h1 {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
-    color: #2d3748;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .description-input {
@@ -1187,6 +1201,12 @@ header h1 {
 
 .description-input::placeholder {
     color: #a0aec0;
+}
+
+/* Modal Actions */
+.modal-actions {
+    margin-top: 1.5rem;
+    text-align: center;
 }
 
 /* Empty state for daily logs */

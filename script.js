@@ -902,11 +902,9 @@ class HabitTracker {
                         <div class="daily-log-info">
                             <span class="daily-log-goal">${goalData.emoji} ${goalData.name}</span>
                             ${activity.description ? `<span class="daily-log-description">"${activity.description}"</span>` : ''}
-                            <div class="daily-log-amount-time">
-                                <span class="daily-log-amount">${activity.amount} ${goalData.unit}</span>
-                                <span class="daily-log-time">${time}</span>
-                            </div>
+                            <span class="daily-log-amount">${activity.amount} ${goalData.unit}</span>
                         </div>
+                        <div class="daily-log-time">${time}</div>
                     </div>
                 `;
             }).join('');
