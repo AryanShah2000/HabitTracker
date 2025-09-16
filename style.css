@@ -97,24 +97,18 @@ header {
 .app-title {
     font-size: 3.5rem;
     font-weight: 800;
-    background: var(--text-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: white;
     margin-bottom: 10px;
     letter-spacing: -0.02em;
-    text-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.6);
 }
 
 header h1 {
     font-size: 2.5rem;
     font-weight: 700;
-    background: var(--text-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: white;
     margin-bottom: 15px;
-    text-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.6);
 }
 
 .date-display {
