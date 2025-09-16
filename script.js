@@ -273,6 +273,22 @@ class HabitTracker {
         if (authRequiredLogin) {
             authRequiredLogin.addEventListener('click', () => {
                 console.log('Auth required login button clicked');
+                
+                // Create a simple test modal from scratch
+                const testModal = document.createElement('div');
+                testModal.innerHTML = `
+                    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+                        <div style="background: white; padding: 40px; border-radius: 10px; border: 3px solid red; max-width: 400px; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
+                            <h2 style="color: black; margin: 0 0 20px 0;">Login Modal Test</h2>
+                            <p style="color: black;">If you can see this, the modal system is working!</p>
+                            <button onclick="this.closest('div').parentElement.remove()" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Close</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(testModal);
+                console.log('Created test modal');
+                
+                // Also try the original modal
                 const loginModal = document.getElementById('loginModal');
                 console.log('loginModal element:', loginModal);
                 if (loginModal) {
