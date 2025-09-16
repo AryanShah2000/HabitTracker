@@ -466,15 +466,15 @@ header h1 {
 .modal-header h3 {
     font-size: 1.3rem;
     font-weight: 600;
-    color: white;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    color: #2d3748;
+    text-shadow: none;
 }
 
 .close-btn {
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: #a0aec0;
     cursor: pointer;
     padding: 4px;
     border-radius: 4px;
@@ -482,8 +482,8 @@ header h1 {
 }
 
 .close-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
+    background-color: #f7fafc;
+    color: #4a5568;
 }
 
 /* Form Styles */
@@ -1122,22 +1122,22 @@ header h1 {
 .auth-modal {
     max-width: 420px;
     width: 90%;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 24px;
     padding: 2rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    color: white;
+    color: #2d3748;
 }
 
 .auth-modal h2 {
-    color: white;
+    color: #2d3748;
     text-align: center;
     margin-bottom: 2rem;
     font-size: 2rem;
     font-weight: 700;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+    text-shadow: none;
 }
 
 .auth-form {
@@ -1154,35 +1154,35 @@ header h1 {
 .auth-form label {
     font-weight: 500;
     margin-bottom: 0.5rem;
-    color: rgba(255, 255, 255, 0.95);
+    color: #4a5568;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    text-shadow: none;
 }
 
 .auth-form input {
     padding: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid #e2e8f0;
     border-radius: 12px;
     font-size: 1rem;
-    background: rgba(0, 0, 0, 0.3);
-    color: white;
+    background: #f7fafc;
+    color: #2d3748;
     transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    backdrop-filter: none;
+    text-shadow: none;
 }
 
 .auth-form input:focus {
     outline: none;
     border-color: var(--primary-blue);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-    background: rgba(0, 0, 0, 0.4);
+    background: white;
 }
 
 .auth-form input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    color: #a0aec0;
+    text-shadow: none;
 }
 
 .auth-submit-btn {
@@ -1221,9 +1221,9 @@ header h1 {
 .auth-switch {
     text-align: center;
     margin-top: 1.5rem;
-    color: rgba(255, 255, 255, 0.95);
+    color: #718096;
     font-size: 0.95rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    text-shadow: none;
     font-weight: 500;
 }
 
@@ -1237,7 +1237,7 @@ header h1 {
     font-weight: 600;
     transition: all 0.3s ease;
     position: relative;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    text-shadow: none;
 }
 
 .link-btn:hover {
