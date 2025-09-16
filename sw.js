@@ -1,4 +1,4 @@
-const CACHE_NAME = 'habit-tracker-v4'; // Increment version to force cache refresh
+const CACHE_NAME = 'habit-tracker-v5'; // Increment version to force cache refresh
 const urlsToCache = [
   '/',
   '/index.html',
@@ -52,6 +52,18 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET' || 
       !event.request.url.startsWith(self.location.origin) ||
       event.request.url.includes('/api/')) {
+    return;
+  }
+
+  // For script.js, always fetch from network to ensure latest version
+  if (event.request.url.includes('/script.js')) {
+    console.log('Service Worker: Force fetching script.js from network');
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        // Fallback to cache only if network fails
+        return caches.match(event.request);
+      })
+    );
     return;
   }
 
