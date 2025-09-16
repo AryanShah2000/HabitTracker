@@ -274,34 +274,19 @@ class HabitTracker {
             authRequiredLogin.addEventListener('click', () => {
                 console.log('Auth required login button clicked');
                 
-                // Create a simple test modal from scratch
-                const testModal = document.createElement('div');
-                testModal.innerHTML = `
-                    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center;">
-                        <div style="background: white; padding: 40px; border-radius: 10px; border: 3px solid red; max-width: 400px; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
-                            <h2 style="color: black; margin: 0 0 20px 0;">Login Modal Test</h2>
-                            <p style="color: black;">If you can see this, the modal system is working!</p>
-                            <button onclick="this.closest('div').parentElement.remove()" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Close</button>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(testModal);
-                console.log('Created test modal');
-                
-                // Also try the original modal
                 const loginModal = document.getElementById('loginModal');
                 console.log('loginModal element:', loginModal);
                 if (loginModal) {
                     loginModal.classList.add('show');
-                    // Force the modal to be visible with inline styles as backup
+                    // Force the modal to be visible with inline styles and high z-index
                     loginModal.style.display = 'flex';
                     loginModal.style.position = 'fixed';
                     loginModal.style.top = '0';
                     loginModal.style.left = '0';
                     loginModal.style.width = '100%';
                     loginModal.style.height = '100%';
-                    loginModal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-                    loginModal.style.zIndex = '1000';
+                    loginModal.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+                    loginModal.style.zIndex = '9999';
                     loginModal.style.alignItems = 'center';
                     loginModal.style.justifyContent = 'center';
                     
@@ -314,7 +299,9 @@ class HabitTracker {
                         modalContent.style.borderRadius = '12px';
                         modalContent.style.maxWidth = '400px';
                         modalContent.style.width = '90%';
-                        modalContent.style.zIndex = '1001';
+                        modalContent.style.zIndex = '10000';
+                        modalContent.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+                        modalContent.style.border = '1px solid #ddd';
                         console.log('Styled modal content as well');
                     }
                     
@@ -346,17 +333,33 @@ class HabitTracker {
                 console.log('signupModal element:', signupModal);
                 if (signupModal) {
                     signupModal.classList.add('show');
-                    // Force the modal to be visible with inline styles as backup
+                    // Force the modal to be visible with inline styles and high z-index
                     signupModal.style.display = 'flex';
                     signupModal.style.position = 'fixed';
                     signupModal.style.top = '0';
                     signupModal.style.left = '0';
                     signupModal.style.width = '100%';
                     signupModal.style.height = '100%';
-                    signupModal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-                    signupModal.style.zIndex = '1000';
+                    signupModal.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+                    signupModal.style.zIndex = '9999';
                     signupModal.style.alignItems = 'center';
                     signupModal.style.justifyContent = 'center';
+                    
+                    // Also force the modal content to be visible
+                    const modalContent = signupModal.querySelector('.modal-content');
+                    if (modalContent) {
+                        modalContent.style.display = 'block';
+                        modalContent.style.backgroundColor = 'white';
+                        modalContent.style.padding = '24px';
+                        modalContent.style.borderRadius = '12px';
+                        modalContent.style.maxWidth = '400px';
+                        modalContent.style.width = '90%';
+                        modalContent.style.zIndex = '10000';
+                        modalContent.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+                        modalContent.style.border = '1px solid #ddd';
+                        console.log('Styled signup modal content as well');
+                    }
+                    
                     console.log('Added show class and inline styles to signup modal');
                 } else {
                     console.log('Signup modal not found!');
