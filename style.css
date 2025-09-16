@@ -259,26 +259,10 @@ header h1 {
 .progress-fill {
     height: 100%;
     border-radius: 6px;
-    transition: all 0.3s ease;
+    transition: width 0.3s ease;
     background: var(--accent-gradient);
     width: 0%;
     position: relative;
-}
-
-.progress-fill::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
 }
 
 /* Progress bar color states */
@@ -342,101 +326,149 @@ header h1 {
 
 /* Calendar Section */
 .calendar-section {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.12) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.calendar-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+    border-radius: 24px;
 }
 
 .calendar-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
 }
 
 .calendar-header h3 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 600;
-    color: #2d3748;
+    color: var(--text-primary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .nav-btn {
-    background: none;
-    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     font-size: 1.5rem;
-    color: #718096;
+    color: var(--text-primary);
     cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    padding: 8px 12px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
 }
 
 .nav-btn:hover {
-    background-color: #f7fafc;
-    color: #4a5568;
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
+    gap: 3px;
+    position: relative;
+    z-index: 1;
 }
 
 .calendar-day-header {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 24px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: #718096;
-    background-color: #f7fafc;
-    border-radius: 3px;
+    height: 28px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 6px;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .calendar-day {
-    height: 32px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: 500;
-    border-radius: 3px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    background-color: #f7fafc;
-    color: #a0aec0;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
 }
 
 .calendar-day.current-month {
-    color: #4a5568;
-    background-color: #e2e8f0;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .calendar-day.today {
-    border: 2px solid #4299e1;
+    border: 2px solid var(--primary-blue);
     font-weight: 700;
+    background: rgba(66, 153, 225, 0.2);
+    color: var(--primary-blue);
+    box-shadow: 0 0 20px rgba(66, 153, 225, 0.3);
 }
 
 .calendar-day.no-goals {
-    background-color: #fed7d7;
-    color: #c53030;
+    background: rgba(245, 101, 101, 0.2);
+    color: #f56565;
+    border-color: rgba(245, 101, 101, 0.3);
 }
 
 .calendar-day.partial-goals {
-    background-color: #fef5e7;
-    color: #d69e2e;
+    background: rgba(237, 137, 54, 0.2);
+    color: #ed8936;
+    border-color: rgba(237, 137, 54, 0.3);
 }
 
 .calendar-day.all-goals {
-    background-color: #c6f6d5;
-    color: #2f855a;
+    background: rgba(72, 187, 120, 0.2);
+    color: #48bb78;
+    border-color: rgba(72, 187, 120, 0.3);
 }
 
 .calendar-day:hover {
-    transform: scale(1.1);
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Modal Styles */
@@ -863,25 +895,28 @@ header h1 {
 
 .daily-log-info {
     flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .daily-log-goal {
     font-weight: 600;
-    color: #2d3748;
-    margin-bottom: 0.25rem;
+    color: var(--text-primary);
 }
 
 .daily-log-amount {
-    color: #4a5568;
-    font-size: 0.9rem;
+    color: var(--primary-blue);
+    font-weight: bold;
+    margin-left: auto;
 }
 
 .daily-log-description {
-    color: #718096;
-    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
     font-style: italic;
-    margin-top: 0.5rem;
-    line-height: 1.4;
+    opacity: 0.8;
 }
 
 .daily-log-time {
