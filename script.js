@@ -925,7 +925,7 @@ class HabitTracker {
         
         const slider = document.getElementById('quickAddSlider');
         const valueInput = document.getElementById('sliderValue');
-        const unitDisplay = document.getElementById('unitDisplay');
+        const unitDisplay = document.getElementById('quickAddUnit');
         
         slider.max = goalData.target * 2; // Allow adding up to 2x the daily goal
         valueInput.max = goalData.target * 2;
