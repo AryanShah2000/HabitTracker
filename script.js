@@ -13,6 +13,7 @@ class HabitTracker {
         this.activities = [];
         this.editingActivity = null;
         this.eventListenersSetup = false; // Prevent duplicate event listeners
+        this.authEventListenersSetup = false; // Prevent duplicate auth event listeners
         this.isOnline = navigator.onLine;
         
         // Authentication properties
@@ -139,6 +140,9 @@ class HabitTracker {
         document.getElementById('authRequired').style.display = 'flex';
         document.getElementById('mainApp').style.display = 'none';
         document.getElementById('authHeader').style.display = 'block';
+        
+        // Ensure auth event listeners are set up
+        this.setupAuthEventListeners();
     }
 
     setupLogoutButton() {
@@ -265,6 +269,9 @@ class HabitTracker {
         this.authToken = null;
         this.activities = [];
         
+        // Reset event listener flags so they can be set up again
+        this.authEventListenersSetup = false;
+        
         // Clear localStorage completely
         localStorage.removeItem('authToken');
         localStorage.removeItem('currentUser');
@@ -354,7 +361,14 @@ class HabitTracker {
     }
     
     setupAuthEventListeners() {
+        // Prevent duplicate auth event listeners
+        if (this.authEventListenersSetup) {
+            console.log('Auth event listeners already set up, skipping...');
+            return;
+        }
+        
         console.log('Setting up authentication event listeners...');
+        this.authEventListenersSetup = true;
         
         // Show login modal
         const showLoginBtn = document.getElementById('showLoginBtn');
@@ -983,13 +997,13 @@ class HabitTracker {
     
     // Event Listeners
     setupEventListeners() {
-        // Prevent duplicate event listeners
+        // Prevent duplicate event listeners for main app
         if (this.eventListenersSetup) {
-            console.log('Event listeners already set up, skipping...');
+            console.log('Main app event listeners already set up, skipping...');
             return;
         }
         
-        console.log('Setting up event listeners...');
+        console.log('Setting up main app event listeners...');
         this.eventListenersSetup = true;
         // Modal controls
         document.getElementById('logActivityBtn').addEventListener('click', () => {
