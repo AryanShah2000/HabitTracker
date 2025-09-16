@@ -381,6 +381,56 @@ class HabitTracker {
         this.selectedDate = new Date(date);
         this.updateProgress();
         this.renderCalendar();
+        this.showDailyLogs(date);
+    }
+
+    // Daily Logs Methods
+    showDailyLogs(date) {
+        const dateStr = this.formatDate(date);
+        const dayActivities = this.activities.filter(activity => activity.date === dateStr);
+        
+        const dailyLogsSection = document.getElementById('dailyLogsSection');
+        const dailyLogsTitle = document.getElementById('dailyLogsTitle');
+        const dailyLogsContainer = document.getElementById('dailyLogsContainer');
+        
+        // Format the date for display
+        const displayDate = date.toLocaleDateString('en-US', { 
+            weekday: 'long',
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        
+        dailyLogsTitle.textContent = `Activities for ${displayDate}`;
+        
+        if (dayActivities.length === 0) {
+            dailyLogsContainer.innerHTML = '<div class="daily-logs-empty">No activities logged for this day</div>';
+        } else {
+            // Sort activities by timestamp (newest first)
+            const sortedActivities = dayActivities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            dailyLogsContainer.innerHTML = sortedActivities.map(activity => {
+                const goalData = this.goals[activity.goal];
+                const time = new Date(activity.timestamp).toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: '2-digit',
+                    hour12: true 
+                });
+                
+                return `
+                    <div class="daily-log-item">
+                        <div class="daily-log-info">
+                            <div class="daily-log-goal">${goalData.emoji} ${goalData.name}</div>
+                            <div class="daily-log-amount">${activity.amount} ${goalData.unit}</div>
+                            ${activity.description ? `<div class="daily-log-description">"${activity.description}"</div>` : ''}
+                        </div>
+                        <div class="daily-log-time">${time}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        dailyLogsSection.style.display = 'block';
     }
     
     // Quick Add Methods
@@ -421,6 +471,7 @@ class HabitTracker {
     
     hideQuickAddModal() {
         document.getElementById('quickAddModal').classList.remove('show');
+        document.getElementById('quickAddDescription').value = '';
         this.currentQuickAddGoal = null;
     }
     
@@ -428,12 +479,15 @@ class HabitTracker {
         const amount = parseFloat(document.getElementById('sliderValue').value);
         if (amount <= 0) return;
         
+        const description = document.getElementById('quickAddDescription').value.trim();
+        
         try {
             const activity = {
                 id: Date.now(),
                 goal: this.currentQuickAddGoal,
                 date: this.formatDate(this.selectedDate),
                 amount,
+                description: description || null,
                 timestamp: new Date().toISOString()
             };
             
@@ -562,6 +616,7 @@ class HabitTracker {
         const goal = document.getElementById('goalSelect').value;
         const date = document.getElementById('dateInput').value;
         const amount = parseFloat(document.getElementById('amountInput').value);
+        const description = document.getElementById('descriptionInput').value.trim();
         
         if (!goal || !date || !amount) return;
         
@@ -570,7 +625,13 @@ class HabitTracker {
                 // Update existing activity
                 const index = this.activities.findIndex(a => a.id === this.editingActivity.id);
                 if (index !== -1) {
-                    this.activities[index] = { ...this.editingActivity, goal, date, amount };
+                    this.activities[index] = { 
+                        ...this.editingActivity, 
+                        goal, 
+                        date, 
+                        amount, 
+                        description: description || null 
+                    };
                     
                     if (this.isOnline) {
                         await this.apiCall('PUT', { 
@@ -586,6 +647,7 @@ class HabitTracker {
                     goal,
                     date,
                     amount,
+                    description: description || null,
                     timestamp: new Date().toISOString()
                 };
                 
