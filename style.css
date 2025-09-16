@@ -119,9 +119,10 @@ header h1 {
 
 .date-display {
     font-size: 1rem;
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.9);
     font-weight: 500;
     margin-bottom: 8px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .status-indicator {
@@ -130,7 +131,8 @@ header h1 {
     align-items: center;
     justify-content: center;
     font-size: 0.8rem;
-    color: #718096;
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .status-indicator.online .status-text {
@@ -1045,12 +1047,66 @@ header h1 {
     background-clip: text;
 }
 
+/* Just3 Title Animation */
+.just3-title {
+    animation: just3Popup 2s ease-out;
+    position: relative;
+    display: inline-block;
+}
+
+@keyframes just3Popup {
+    0% {
+        transform: scale(0) rotate(-180deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2) rotate(0deg);
+        opacity: 1;
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.just3-title::after {
+    content: '✨';
+    position: absolute;
+    top: -10px;
+    right: -20px;
+    font-size: 1.5rem;
+    animation: sparkle 3s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% { 
+        opacity: 0.3;
+        transform: scale(1) rotate(0deg);
+    }
+    50% { 
+        opacity: 1;
+        transform: scale(1.2) rotate(15deg);
+    }
+}
+
 .auth-required-content p {
     font-size: 1.2rem;
     line-height: 1.6;
     margin-bottom: 1rem;
-    opacity: 0.9;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    font-weight: 400;
+}
+
+.auth-required-content .tagline {
+    font-style: italic;
+    font-weight: 500;
     color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    margin: 1.5rem 0;
 }
 
 .auth-required-buttons {
@@ -1098,10 +1154,11 @@ header h1 {
 .auth-form label {
     font-weight: 500;
     margin-bottom: 0.5rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.95);
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .auth-form input {
@@ -1150,8 +1207,9 @@ header h1 {
 .auth-switch {
     text-align: center;
     margin-top: 1.5rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.85);
     font-size: 0.9rem;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .link-btn {
