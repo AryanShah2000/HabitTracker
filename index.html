@@ -69,9 +69,11 @@
     <!-- Main App (hidden until authenticated) -->
     <div class="container" id="mainApp" style="display: none;">
         <header>
-            <div class="date-display" id="currentDate"></div>
-            <div class="status-indicator" id="statusIndicator">
-                <span class="status-text">●</span>
+            <div class="header-content">
+                <div class="date-display" id="currentDate"></div>
+                <div class="status-indicator" id="statusIndicator">
+                    <span class="status-text">●</span>
+                </div>
             </div>
         </header>
 
@@ -203,7 +205,10 @@
             <div class="slider-container">
                 <label for="quickAddSlider" id="quickAddLabel">Amount:</label>
                 <input type="range" id="quickAddSlider" min="0" max="100" value="0" class="slider">
-                <input type="number" id="sliderValue" class="slider-value-input" min="0" max="100" value="0">
+                <div class="slider-value-container">
+                    <input type="number" id="sliderValue" class="slider-value-input" min="0" max="100" value="0">
+                    <span class="unit-display" id="quickAddUnit"></span>
+                </div>
             </div>
             <div class="description-container">
                 <label for="quickAddDescription">Description (optional):</label>

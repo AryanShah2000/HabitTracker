@@ -902,9 +902,11 @@ class HabitTracker {
                         <div class="daily-log-info">
                             <span class="daily-log-goal">${goalData.emoji} ${goalData.name}</span>
                             ${activity.description ? `<span class="daily-log-description">"${activity.description}"</span>` : ''}
-                            <span class="daily-log-amount">${activity.amount} ${goalData.unit}</span>
+                            <div class="daily-log-amount-time">
+                                <span class="daily-log-amount">${activity.amount} ${goalData.unit}</span>
+                                <span class="daily-log-time">${time}</span>
+                            </div>
                         </div>
-                        <div class="daily-log-time">${time}</div>
                     </div>
                 `;
             }).join('');
@@ -923,11 +925,15 @@ class HabitTracker {
         
         const slider = document.getElementById('quickAddSlider');
         const valueInput = document.getElementById('sliderValue');
+        const unitDisplay = document.getElementById('unitDisplay');
         
         slider.max = goalData.target * 2; // Allow adding up to 2x the daily goal
         valueInput.max = goalData.target * 2;
         slider.value = 0;
         valueInput.value = 0;
+        
+        // Update unit display
+        unitDisplay.textContent = goalData.unit;
         
         // Clear description field
         document.getElementById('quickAddDescription').value = '';

@@ -93,6 +93,13 @@ header {
     position: relative;
 }
 
+.header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
 .auth-header {
     background: var(--surface-gradient);
     backdrop-filter: blur(20px);
@@ -121,20 +128,21 @@ header h1 {
 }
 
 .date-display {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 500;
-    margin-bottom: 8px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    font-size: 1.5rem;
+    color: white;
+    font-weight: 600;
+    margin-bottom: 0;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    letter-spacing: -0.01em;
 }
 
 .status-indicator {
-    margin-top: 8px;
+    margin-top: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
@@ -889,6 +897,15 @@ header h1 {
         inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
+.slider-value-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 auto;
+    width: fit-content;
+}
+
 .slider-value-input {
     text-align: center;
     font-size: 1.2rem;
@@ -902,12 +919,19 @@ header h1 {
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
     width: 100px;
-    margin: 0 auto;
+    margin: 0;
     display: block;
     transition: all 0.3s ease;
     box-shadow: 
         0 2px 8px rgba(0, 0, 0, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.unit-display {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .slider-value-input:focus {
@@ -1067,7 +1091,6 @@ header h1 {
 
 .daily-log-item {
     display: flex;
-    justify-content: space-between;
     align-items: flex-start;
     padding: 16px;
     margin-bottom: 12px;
@@ -1095,9 +1118,10 @@ header h1 {
 .daily-log-info {
     flex: 1;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 8px;
     flex-wrap: wrap;
+    flex-direction: column;
 }
 
 .daily-log-goal {
@@ -1105,10 +1129,17 @@ header h1 {
     color: white;
 }
 
+.daily-log-amount-time {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    margin-top: 4px;
+}
+
 .daily-log-amount {
     color: #63b3ed;
     font-weight: bold;
-    margin-left: auto;
 }
 
 .daily-log-description {
@@ -1119,11 +1150,9 @@ header h1 {
 }
 
 .daily-log-time {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.7);
-    white-space: nowrap;
-    margin-left: 1rem;
-    font-weight: 500;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 400;
 }
 
 /* Description Input Styles */
