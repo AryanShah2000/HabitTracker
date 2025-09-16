@@ -10,8 +10,17 @@
     --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --button-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+    --text-gradient: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+    --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
     --dark-gradient: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
     --surface-gradient: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    
+    --primary-blue: #6366f1;
+    --accent-cyan: #06b6d4;
+    --accent-purple: #8b5cf6;
+    --accent-green: #10b981;
+    --accent-orange: #f59e0b;
     
     --primary-glow: 0 0 30px rgba(102, 126, 234, 0.3);
     --accent-glow: 0 0 20px rgba(79, 172, 254, 0.4);
@@ -1181,22 +1190,32 @@ header h1 {
     padding: 1rem !important;
     font-size: 1rem !important;
     font-weight: 600 !important;
-    background: var(--button-gradient) !important;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%) !important;
     border: none !important;
     border-radius: 12px !important;
     color: white !important;
-    cursor: pointer;
+    cursor: pointer !important;
     transition: all 0.3s ease !important;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
-    width: 100%;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4) !important;
+    width: 100% !important;
+    min-height: 50px !important;
+    display: block !important;
+    text-align: center !important;
+}
+
+/* More specific selector to override primary-btn */
+.auth-form .auth-submit-btn,
+.auth-modal .auth-submit-btn {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%) !important;
+    color: white !important;
 }
 
 .auth-submit-btn:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
-    background: var(--button-gradient) !important;
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6) !important;
+    background: linear-gradient(135deg, #5b56f0 0%, #7c3aed 50%, #0891b2 100%) !important;
 }
 
 .auth-switch {
