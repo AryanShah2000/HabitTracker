@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Habit Tracker</title>
+    <title>Just3 - Focus on What Matters</title>
     
     <!-- PWA Meta Tags -->
-    <meta name="description" content="Track your daily water, protein, and exercise habits with beautiful progress visualization">
-    <meta name="theme-color" content="#4CAF50">
+    <meta name="description" content="Master your life by focusing on just 3 essential habits. AI-powered habit tracking made simple.">
+    <meta name="theme-color" content="#6366f1">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Habit Tracker">
-    <meta name="application-name" content="Habit Tracker">
-    <meta name="msapplication-TileColor" content="#4CAF50">
+    <meta name="apple-mobile-web-app-title" content="Just3">
+    <meta name="application-name" content="Just3">
+    <meta name="msapplication-TileColor" content="#6366f1">
     <meta name="msapplication-config" content="browserconfig.xml">
     
     <!-- Manifest -->
@@ -50,7 +50,7 @@
     <!-- Authentication Header -->
     <header class="auth-header" id="authHeader">
         <div class="auth-container">
-            <h1 class="app-title">🎯 Habit Tracker</h1>
+            <h1 class="app-title">⚡ Just3</h1>
             <div class="auth-controls">
                 <!-- Show when not logged in -->
                 <div id="authButtons" class="auth-buttons">
@@ -69,7 +69,7 @@
     <!-- Main App (hidden until authenticated) -->
     <div class="container" id="mainApp" style="display: none;">
         <header>
-            <h1>Habit Tracker</h1>
+            <h1>Just3</h1>
             <div class="date-display" id="currentDate"></div>
             <div class="status-indicator" id="statusIndicator">
                 <span class="status-text">●</span>
@@ -273,8 +273,9 @@
     <!-- Authentication Required Screen -->
     <div class="auth-required" id="authRequired">
         <div class="auth-required-content">
-            <h2>🎯 Welcome to Habit Tracker</h2>
-            <p>Track your daily water, protein, and exercise habits with beautiful progress visualization.</p>
+            <h2>⚡ Welcome to Just3</h2>
+            <p>Master your life by focusing on just <strong>3 essential habits</strong>.</p>
+            <p class="tagline">"Perfect 3, not perfect everything."</p>
             <p>Please log in or create an account to get started.</p>
             <div class="auth-required-buttons">
                 <button class="auth-btn login-btn" id="authRequiredLogin">Login</button>
