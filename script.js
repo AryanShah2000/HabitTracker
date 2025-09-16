@@ -277,11 +277,18 @@ class HabitTracker {
                 console.log('loginModal element:', loginModal);
                 if (loginModal) {
                     loginModal.classList.add('show');
-                    console.log('Added show class to login modal');
-                    const computedStyle = window.getComputedStyle(loginModal);
-                    console.log('Modal display style:', computedStyle.display);
-                    console.log('Modal visibility:', computedStyle.visibility);
-                    console.log('Modal z-index:', computedStyle.zIndex);
+                    // Force the modal to be visible with inline styles as backup
+                    loginModal.style.display = 'flex';
+                    loginModal.style.position = 'fixed';
+                    loginModal.style.top = '0';
+                    loginModal.style.left = '0';
+                    loginModal.style.width = '100%';
+                    loginModal.style.height = '100%';
+                    loginModal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+                    loginModal.style.zIndex = '1000';
+                    loginModal.style.alignItems = 'center';
+                    loginModal.style.justifyContent = 'center';
+                    console.log('Added show class and inline styles to login modal');
                 } else {
                     console.log('Login modal not found!');
                 }
@@ -309,7 +316,18 @@ class HabitTracker {
                 console.log('signupModal element:', signupModal);
                 if (signupModal) {
                     signupModal.classList.add('show');
-                    console.log('Added show class to signup modal');
+                    // Force the modal to be visible with inline styles as backup
+                    signupModal.style.display = 'flex';
+                    signupModal.style.position = 'fixed';
+                    signupModal.style.top = '0';
+                    signupModal.style.left = '0';
+                    signupModal.style.width = '100%';
+                    signupModal.style.height = '100%';
+                    signupModal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+                    signupModal.style.zIndex = '1000';
+                    signupModal.style.alignItems = 'center';
+                    signupModal.style.justifyContent = 'center';
+                    console.log('Added show class and inline styles to signup modal');
                 } else {
                     console.log('Signup modal not found!');
                 }
