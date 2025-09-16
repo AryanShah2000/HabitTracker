@@ -278,6 +278,10 @@ class HabitTracker {
                 if (loginModal) {
                     loginModal.classList.add('show');
                     console.log('Added show class to login modal');
+                    const computedStyle = window.getComputedStyle(loginModal);
+                    console.log('Modal display style:', computedStyle.display);
+                    console.log('Modal visibility:', computedStyle.visibility);
+                    console.log('Modal z-index:', computedStyle.zIndex);
                 } else {
                     console.log('Login modal not found!');
                 }
