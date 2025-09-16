@@ -457,14 +457,15 @@ header h1 {
 .modal-header h3 {
     font-size: 1.3rem;
     font-weight: 600;
-    color: #2d3748;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .close-btn {
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: #a0aec0;
+    color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
     padding: 4px;
     border-radius: 4px;
@@ -472,8 +473,8 @@ header h1 {
 }
 
 .close-btn:hover {
-    background-color: #f7fafc;
-    color: #4a5568;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
 }
 
 /* Form Styles */
@@ -1176,32 +1177,35 @@ header h1 {
 }
 
 .auth-submit-btn {
-    margin-top: 1rem;
-    padding: 1rem;
-    font-size: 1rem;
-    font-weight: 600;
-    background: var(--button-gradient);
-    border: none;
-    border-radius: 12px;
-    color: white;
+    margin-top: 1rem !important;
+    padding: 1rem !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    background: var(--button-gradient) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    color: white !important;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease !important;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
+    width: 100%;
 }
 
 .auth-submit-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
+    background: var(--button-gradient) !important;
 }
 
 .auth-switch {
     text-align: center;
     margin-top: 1.5rem;
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 0.9rem;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 0.95rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    font-weight: 500;
 }
 
 .link-btn {
@@ -1211,9 +1215,10 @@ header h1 {
     cursor: pointer;
     text-decoration: none;
     font-size: inherit;
-    font-weight: 500;
+    font-weight: 600;
     transition: all 0.3s ease;
     position: relative;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .link-btn:hover {
