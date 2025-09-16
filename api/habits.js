@@ -1,13 +1,30 @@
 const { neon } = require('@neondatabase/serverless');
+const jwt = require('jsonwebtoken');
 
 // Initialize database connection
 const sql = neon(process.env.DATABASE_URL);
+const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production';
+
+// Helper function to verify JWT token
+function verifyToken(authHeader) {
+  if (!authHeader) {
+    throw new Error('No token provided');
+  }
+
+  const token = authHeader.split(' ')[1]; // Remove 'Bearer ' prefix
+  
+  try {
+    return jwt.verify(token, JWT_SECRET);
+  } catch (error) {
+    throw new Error('Invalid or expired token');
+  }
+}
 
 module.exports = async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
     res.status(200).end();
@@ -15,14 +32,19 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    console.log(`API ${req.method} request:`, req.body);
+    // Verify authentication for all requests
+    const decoded = verifyToken(req.headers.authorization);
+    const userId = decoded.userId;
+    
+    console.log(`API ${req.method} request for user ${userId}:`, req.body);
 
     if (req.method === 'GET') {
-      // Get all activities and transform to frontend format
+      // Get all activities for the authenticated user and transform to frontend format
       const dbActivities = await sql`
         SELECT id, date, water, protein, exercise, 
                created_at as timestamp
         FROM activities 
+        WHERE user_id = ${userId}
         ORDER BY date DESC
       `;
       
@@ -76,15 +98,16 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ success: false, error: 'Activity data required' });
       }
       
-      const { date, goal, amount = 1 } = activity;
+      const { date, goal, amount = 1, description = null } = activity;
       
       if (!date || !goal) {
         return res.status(400).json({ success: false, error: 'Date and goal are required' });
       }
       
-      // Get current values for this date
+      // Get current values for this date and user
       const current = await sql`
-        SELECT water, protein, exercise FROM activities WHERE date = ${date}
+        SELECT water, protein, exercise FROM activities 
+        WHERE date = ${date} AND user_id = ${userId}
       `;
       
       let water = 0, protein = 0, exercise = 0;
@@ -102,15 +125,23 @@ module.exports = async function handler(req, res) {
       
       // Use UPSERT to save to database
       const result = await sql`
-        INSERT INTO activities (date, water, protein, exercise)
-        VALUES (${date}, ${water}, ${protein}, ${exercise})
-        ON CONFLICT (date) DO UPDATE SET 
+        INSERT INTO activities (user_id, date, water, protein, exercise)
+        VALUES (${userId}, ${date}, ${water}, ${protein}, ${exercise})
+        ON CONFLICT (user_id, date) DO UPDATE SET 
           water = EXCLUDED.water,
           protein = EXCLUDED.protein,
           exercise = EXCLUDED.exercise,
           updated_at = CURRENT_TIMESTAMP
         RETURNING id, date, water, protein, exercise, created_at as timestamp
       `;
+      
+      // If there's a description, save it as an individual activity log
+      if (description) {
+        await sql`
+          INSERT INTO activity_logs (user_id, date, goal, amount, description, created_at)
+          VALUES (${userId}, ${date}, ${goal}, ${amount}, ${description}, CURRENT_TIMESTAMP)
+        `;
+      }
       
       // Return the activity in frontend format
       const savedActivity = {
@@ -201,6 +232,12 @@ module.exports = async function handler(req, res) {
     
   } catch (error) {
     console.error('API Error:', error);
+    
+    // Handle authentication errors
+    if (error.message.includes('token') || error.message.includes('No token provided')) {
+      return res.status(401).json({ success: false, error: 'Authentication required' });
+    }
+    
     res.status(500).json({ success: false, error: error.message || 'Internal server error' });
   }
 }

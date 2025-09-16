@@ -13,8 +13,14 @@ class HabitTracker {
         this.activities = [];
         this.editingActivity = null;
         this.isOnline = navigator.onLine;
+        
+        // Authentication properties
+        this.currentUser = null;
+        this.authToken = null;
+        
         // Use relative URL so it works both locally and on Vercel
         this.apiUrl = window.location.hostname === 'localhost' ? 'http://localhost:3000/api/habits' : '/api/habits';
+        this.authApiUrl = window.location.hostname === 'localhost' ? 'http://localhost:3000/api/auth' : '/api/auth';
         
         this.init();
     }
@@ -25,6 +31,18 @@ class HabitTracker {
         
         this.setupOnlineListener();
         this.setupVisibilityListener(); // Add visibility listener for cross-device sync
+        
+        // Check authentication first
+        await this.checkAuthentication();
+        
+        // If not authenticated, show auth screen and setup auth listeners
+        if (!this.currentUser) {
+            this.showAuthScreen();
+            this.setupAuthEventListeners();
+            return;
+        }
+        
+        // User is authenticated, proceed with app initialization
         await this.loadActivities();
         this.updateCurrentDate();
         this.updateProgress();
@@ -36,6 +54,9 @@ class HabitTracker {
         
         // Show daily logs for today by default
         this.showDailyLogs(this.selectedDate);
+        
+        // Show the main app
+        this.showMainApp();
     }
     
     async registerServiceWorker() {
@@ -73,6 +94,236 @@ class HabitTracker {
                 this.showQuickAddModal(action);
             }, 500);
         }
+    }
+
+    // Authentication Methods
+    async checkAuthentication() {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            return false;
+        }
+
+        try {
+            const response = await fetch(this.authApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ action: 'verify' })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                this.currentUser = data.user;
+                this.authToken = token;
+                return true;
+            } else {
+                // Token is invalid, clear it
+                localStorage.removeItem('authToken');
+                return false;
+            }
+        } catch (error) {
+            console.error('Authentication check failed:', error);
+            return false;
+        }
+    }
+
+    showAuthScreen() {
+        document.getElementById('authRequired').style.display = 'flex';
+        document.getElementById('mainApp').style.display = 'none';
+        document.getElementById('authHeader').style.display = 'block';
+    }
+
+    showMainApp() {
+        document.getElementById('authRequired').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'block';
+        document.getElementById('authHeader').style.display = 'block';
+        
+        // Update header to show user info
+        document.getElementById('authButtons').style.display = 'none';
+        document.getElementById('userControls').style.display = 'flex';
+        document.getElementById('usernameDisplay').textContent = this.currentUser.username;
+    }
+
+    async login(username, password) {
+        try {
+            const response = await fetch(this.authApiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'login',
+                    username,
+                    password
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                this.currentUser = data.user;
+                this.authToken = data.token;
+                localStorage.setItem('authToken', data.token);
+                
+                // Initialize the app
+                await this.loadActivities();
+                this.updateCurrentDate();
+                this.updateProgress();
+                this.setupEventListeners();
+                this.renderCalendar();
+                document.getElementById('dateInput').value = this.formatDate(this.selectedDate);
+                this.showDailyLogs(this.selectedDate);
+                
+                this.showMainApp();
+                this.hideAuthModals();
+                
+                return { success: true };
+            } else {
+                return { success: false, error: data.error };
+            }
+        } catch (error) {
+            console.error('Login failed:', error);
+            return { success: false, error: 'Network error. Please try again.' };
+        }
+    }
+
+    async signup(username, password, confirmPassword) {
+        if (password !== confirmPassword) {
+            return { success: false, error: 'Passwords do not match' };
+        }
+
+        try {
+            const response = await fetch(this.authApiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'signup',
+                    username,
+                    password
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                this.currentUser = data.user;
+                this.authToken = data.token;
+                localStorage.setItem('authToken', data.token);
+                
+                // Initialize the app for new user
+                this.activities = []; // Start with empty activities
+                this.updateProgress();
+                this.setupEventListeners();
+                this.renderCalendar();
+                document.getElementById('dateInput').value = this.formatDate(this.selectedDate);
+                this.showDailyLogs(this.selectedDate);
+                
+                this.showMainApp();
+                this.hideAuthModals();
+                
+                return { success: true };
+            } else {
+                return { success: false, error: data.error };
+            }
+        } catch (error) {
+            console.error('Signup failed:', error);
+            return { success: false, error: 'Network error. Please try again.' };
+        }
+    }
+
+    logout() {
+        this.currentUser = null;
+        this.authToken = null;
+        this.activities = [];
+        localStorage.removeItem('authToken');
+        
+        // Show auth screen
+        document.getElementById('authButtons').style.display = 'flex';
+        document.getElementById('userControls').style.display = 'none';
+        this.showAuthScreen();
+    }
+
+    hideAuthModals() {
+        document.getElementById('loginModal').classList.remove('show');
+        document.getElementById('signupModal').classList.remove('show');
+    }
+    
+    setupAuthEventListeners() {
+        // Show login modal
+        document.getElementById('showLoginBtn').addEventListener('click', () => {
+            document.getElementById('loginModal').classList.add('show');
+        });
+        
+        document.getElementById('authRequiredLogin').addEventListener('click', () => {
+            document.getElementById('loginModal').classList.add('show');
+        });
+
+        // Show signup modal
+        document.getElementById('showSignupBtn').addEventListener('click', () => {
+            document.getElementById('signupModal').classList.add('show');
+        });
+        
+        document.getElementById('authRequiredSignup').addEventListener('click', () => {
+            document.getElementById('signupModal').classList.add('show');
+        });
+
+        // Close modals
+        document.getElementById('closeLoginModal').addEventListener('click', () => {
+            this.hideAuthModals();
+        });
+        
+        document.getElementById('closeSignupModal').addEventListener('click', () => {
+            this.hideAuthModals();
+        });
+
+        // Switch between modals
+        document.getElementById('switchToSignup').addEventListener('click', () => {
+            document.getElementById('loginModal').classList.remove('show');
+            document.getElementById('signupModal').classList.add('show');
+        });
+        
+        document.getElementById('switchToLogin').addEventListener('click', () => {
+            document.getElementById('signupModal').classList.remove('show');
+            document.getElementById('loginModal').classList.add('show');
+        });
+
+        // Handle form submissions
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const result = await this.login(username, password);
+            if (!result.success) {
+                alert(result.error);
+            }
+        });
+
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('signupUsername').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupPasswordConfirm').value;
+            
+            const result = await this.signup(username, password, confirmPassword);
+            if (!result.success) {
+                alert(result.error);
+            }
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            this.logout();
+        });
+
+        // Close modals when clicking outside
+        document.getElementById('loginModal').addEventListener('click', (e) => {
+            if (e.target.id === 'loginModal') this.hideAuthModals();
+        });
+        
+        document.getElementById('signupModal').addEventListener('click', (e) => {
+            if (e.target.id === 'signupModal') this.hideAuthModals();
+        });
     }
     
     setupOnlineListener() {
@@ -153,6 +404,11 @@ class HabitTracker {
                 'Content-Type': 'application/json',
             },
         };
+        
+        // Add authorization header if user is authenticated
+        if (this.authToken) {
+            options.headers['Authorization'] = `Bearer ${this.authToken}`;
+        }
         
         if (data) {
             options.body = JSON.stringify(data);
