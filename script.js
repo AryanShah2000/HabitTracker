@@ -792,6 +792,15 @@ class HabitTracker {
         const grid = document.getElementById('calendarGrid');
         grid.innerHTML = '';
         
+        // Add day headers
+        const dayHeaders = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+        dayHeaders.forEach(day => {
+            const headerElement = document.createElement('div');
+            headerElement.className = 'calendar-day-header';
+            headerElement.textContent = day;
+            grid.appendChild(headerElement);
+        });
+        
         // Get first day of month and number of days
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
@@ -1181,7 +1190,10 @@ class HabitTracker {
             
             activityElement.innerHTML = `
                 <div class="activity-info">
-                    <div class="activity-goal">${goal.emoji} ${goal.name} - ${activity.amount} ${goal.unit} • ${date}</div>
+                    <span class="activity-goal">${goal.emoji} ${goal.name}</span>
+                    ${activity.description ? `<span class="activity-description">"${activity.description}"</span>` : ''}
+                    <span class="activity-amount">${activity.amount} ${goal.unit}</span>
+                    <span class="activity-date">• ${date}</span>
                 </div>
                 <div class="activity-actions">
                     <button class="edit-btn" onclick="habitTracker.editActivity('${activity.id}')">Edit</button>
