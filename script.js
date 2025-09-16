@@ -12,6 +12,7 @@ class HabitTracker {
         this.currentMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
         this.activities = [];
         this.editingActivity = null;
+        this.eventListenersSetup = false; // Prevent duplicate event listeners
         this.isOnline = navigator.onLine;
         
         // Authentication properties
@@ -972,6 +973,14 @@ class HabitTracker {
     
     // Event Listeners
     setupEventListeners() {
+        // Prevent duplicate event listeners
+        if (this.eventListenersSetup) {
+            console.log('Event listeners already set up, skipping...');
+            return;
+        }
+        
+        console.log('Setting up event listeners...');
+        this.eventListenersSetup = true;
         // Modal controls
         document.getElementById('logActivityBtn').addEventListener('click', () => {
             this.showLogModal();
