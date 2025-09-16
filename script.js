@@ -287,7 +287,7 @@ class HabitTracker {
         document.getElementById('authButtons').style.display = 'flex';
         document.getElementById('userControls').style.display = 'none';
         document.getElementById('authRequired').style.display = 'flex';
-        document.getElementById('appContainer').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'none';
         
         // Hide any open modals
         this.hideAuthModals();
@@ -1181,8 +1181,7 @@ class HabitTracker {
             
             activityElement.innerHTML = `
                 <div class="activity-info">
-                    <div class="activity-goal">${goal.emoji} ${goal.name}</div>
-                    <div class="activity-details">${date} • ${activity.amount} ${goal.unit}</div>
+                    <div class="activity-goal">${goal.emoji} ${goal.name} - ${activity.amount} ${goal.unit} • ${date}</div>
                 </div>
                 <div class="activity-actions">
                     <button class="edit-btn" onclick="habitTracker.editActivity('${activity.id}')">Edit</button>
