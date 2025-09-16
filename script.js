@@ -249,8 +249,63 @@ class HabitTracker {
     }
 
     hideAuthModals() {
-        document.getElementById('loginModal').classList.remove('show');
-        document.getElementById('signupModal').classList.remove('show');
+        const loginModal = document.getElementById('loginModal');
+        const signupModal = document.getElementById('signupModal');
+        
+        // Remove CSS classes
+        loginModal.classList.remove('show');
+        signupModal.classList.remove('show');
+        
+        // Clear inline styles that were forcing visibility
+        loginModal.style.display = '';
+        loginModal.style.position = '';
+        loginModal.style.top = '';
+        loginModal.style.left = '';
+        loginModal.style.width = '';
+        loginModal.style.height = '';
+        loginModal.style.backgroundColor = '';
+        loginModal.style.zIndex = '';
+        loginModal.style.alignItems = '';
+        loginModal.style.justifyContent = '';
+        
+        signupModal.style.display = '';
+        signupModal.style.position = '';
+        signupModal.style.top = '';
+        signupModal.style.left = '';
+        signupModal.style.width = '';
+        signupModal.style.height = '';
+        signupModal.style.backgroundColor = '';
+        signupModal.style.zIndex = '';
+        signupModal.style.alignItems = '';
+        signupModal.style.justifyContent = '';
+        
+        // Clear modal content inline styles too
+        const loginContent = loginModal.querySelector('.modal-content');
+        const signupContent = signupModal.querySelector('.modal-content');
+        
+        if (loginContent) {
+            loginContent.style.display = '';
+            loginContent.style.backgroundColor = '';
+            loginContent.style.padding = '';
+            loginContent.style.borderRadius = '';
+            loginContent.style.maxWidth = '';
+            loginContent.style.width = '';
+            loginContent.style.zIndex = '';
+            loginContent.style.boxShadow = '';
+            loginContent.style.border = '';
+        }
+        
+        if (signupContent) {
+            signupContent.style.display = '';
+            signupContent.style.backgroundColor = '';
+            signupContent.style.padding = '';
+            signupContent.style.borderRadius = '';
+            signupContent.style.maxWidth = '';
+            signupContent.style.width = '';
+            signupContent.style.zIndex = '';
+            signupContent.style.boxShadow = '';
+            signupContent.style.border = '';
+        }
     }
     
     setupAuthEventListeners() {
@@ -369,10 +424,12 @@ class HabitTracker {
 
         // Close modals
         document.getElementById('closeLoginModal').addEventListener('click', () => {
+            console.log('Close login modal clicked');
             this.hideAuthModals();
         });
         
         document.getElementById('closeSignupModal').addEventListener('click', () => {
+            console.log('Close signup modal clicked');
             this.hideAuthModals();
         });
 
