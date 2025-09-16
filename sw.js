@@ -1,4 +1,4 @@
-const CACHE_NAME = 'habit-tracker-v2'; // Increment version to force cache refresh
+const CACHE_NAME = 'habit-tracker-v3'; // Increment version to force cache refresh
 const urlsToCache = [
   '/',
   '/index.html',
