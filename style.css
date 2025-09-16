@@ -255,13 +255,15 @@ header h1 {
 }
 
 .quick-add-btn {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    border: 2px solid var(--primary-blue);
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--primary-blue);
-    font-size: 1.2rem;
+    border: 2px solid white;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0.1) 100%);
+    color: white;
+    font-size: 1.4rem;
     font-weight: bold;
     cursor: pointer;
     display: flex;
@@ -270,14 +272,23 @@ header h1 {
     transition: all 0.3s ease;
     padding: 0;
     line-height: 1;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px);
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .quick-add-btn:hover {
-    background: var(--primary-blue);
+    background: linear-gradient(135deg, 
+        var(--primary-blue) 0%,
+        rgba(49, 130, 206, 0.9) 100%);
     color: white;
-    transform: scale(1.1);
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    transform: scale(1.15);
+    border-color: var(--primary-blue);
+    box-shadow: 
+        0 6px 20px rgba(66, 153, 225, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .progress-bar {
@@ -537,7 +548,10 @@ header h1 {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background: radial-gradient(circle at center, 
+        rgba(0, 0, 0, 0.6) 0%, 
+        rgba(0, 0, 0, 0.8) 100%);
+    backdrop-filter: blur(8px);
     z-index: 1000;
     animation: fadeIn 0.3s ease;
 }
@@ -549,44 +563,80 @@ header h1 {
 }
 
 .modal-content {
-    background: white;
-    border-radius: 12px;
-    padding: 24px;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.12) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 24px;
+    padding: 28px;
     width: 90%;
     max-width: 400px;
     max-height: 90vh;
     overflow-y: auto;
     animation: slideIn 0.3s ease;
+    box-shadow: 
+        0 16px 40px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.modal-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+    border-radius: 24px;
 }
 
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
 }
 
 .modal-header h3 {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: 600;
-    color: #2d3748;
-    text-shadow: none;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .close-btn {
-    background: none;
-    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     font-size: 1.5rem;
-    color: #a0aec0;
+    color: white;
     cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
 }
 
 .close-btn:hover {
-    background-color: #f7fafc;
-    color: #4a5568;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Form Styles */
@@ -956,11 +1006,11 @@ header h1 {
 }
 
 .daily-logs-header h3 {
-    color: #1a1a1a;
+    color: white;
     margin: 0;
     font-size: 1.3rem;
     font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .daily-logs-container {
@@ -1007,17 +1057,17 @@ header h1 {
 
 .daily-log-goal {
     font-weight: 600;
-    color: #1a1a1a;
+    color: white;
 }
 
 .daily-log-amount {
-    color: #1a1a1a;
+    color: var(--primary-blue);
     font-weight: bold;
     margin-left: auto;
 }
 
 .daily-log-description {
-    color: #4a5568;
+    color: rgba(255, 255, 255, 0.8);
     font-size: 0.9rem;
     font-style: italic;
     opacity: 0.9;
@@ -1025,7 +1075,7 @@ header h1 {
 
 .daily-log-time {
     font-size: 0.8rem;
-    color: #4a5568;
+    color: rgba(255, 255, 255, 0.7);
     white-space: nowrap;
     margin-left: 1rem;
     font-weight: 500;
@@ -1306,22 +1356,46 @@ header h1 {
 .auth-modal {
     max-width: 420px;
     width: 90%;
-    background: rgba(255, 255, 255, 0.95);
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.12) 100%);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 24px;
     padding: 2rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    color: #2d3748;
+    box-shadow: 
+        0 16px 40px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 30% 20%, rgba(120, 119, 198, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 70% 80%, rgba(255, 119, 198, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+    border-radius: 24px;
 }
 
 .auth-modal h2 {
-    color: #2d3748;
+    color: white;
     text-align: center;
     margin-bottom: 2rem;
     font-size: 2rem;
     font-weight: 700;
-    text-shadow: none;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1;
 }
 
 .auth-form {
