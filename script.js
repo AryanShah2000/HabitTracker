@@ -273,7 +273,14 @@ class HabitTracker {
         if (authRequiredLogin) {
             authRequiredLogin.addEventListener('click', () => {
                 console.log('Auth required login button clicked');
-                document.getElementById('loginModal').classList.add('show');
+                const loginModal = document.getElementById('loginModal');
+                console.log('loginModal element:', loginModal);
+                if (loginModal) {
+                    loginModal.classList.add('show');
+                    console.log('Added show class to login modal');
+                } else {
+                    console.log('Login modal not found!');
+                }
             });
         }
 
@@ -294,7 +301,14 @@ class HabitTracker {
         if (authRequiredSignup) {
             authRequiredSignup.addEventListener('click', () => {
                 console.log('Auth required signup button clicked');
-                document.getElementById('signupModal').classList.add('show');
+                const signupModal = document.getElementById('signupModal');
+                console.log('signupModal element:', signupModal);
+                if (signupModal) {
+                    signupModal.classList.add('show');
+                    console.log('Added show class to signup modal');
+                } else {
+                    console.log('Signup modal not found!');
+                }
             });
         }
 
