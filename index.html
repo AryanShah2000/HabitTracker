@@ -60,6 +60,7 @@
                 <!-- Show when logged in -->
                 <div id="userControls" class="user-controls" style="display: none;">
                     <span class="welcome-text">Welcome, <span id="usernameDisplay"></span>!</span>
+                    <button class="auth-btn edit-goals-btn" id="editGoalsBtn">Edit Goals</button>
                     <button class="auth-btn logout-btn" id="logoutBtn">Logout</button>
                 </div>
             </div>
@@ -309,6 +310,159 @@
             </div>
             <div class="modal-actions">
                 <button class="primary-btn" id="editActivitySubmit">Update Activity</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Goals Modal -->
+    <div class="modal" id="editGoalsModal">
+        <div class="modal-content edit-goals-content">
+            <div class="modal-header">
+                <h3>Edit Goals</h3>
+                <button class="close-btn" id="closeEditGoalsModal">&times;</button>
+            </div>
+            <div class="goals-editor">
+                <div class="goal-editor" data-goal="water">
+                    <div class="goal-editor-header">
+                        <span class="goal-emoji-display" id="waterEmojiDisplay">💧</span>
+                        <input type="text" class="goal-name-input" id="waterNameInput" value="Water">
+                    </div>
+                    <div class="goal-editor-controls">
+                        <div class="form-group">
+                            <label>Target Amount:</label>
+                            <div class="target-input-container">
+                                <input type="number" class="goal-target-input" id="waterTargetInput" value="64" min="1">
+                                <input type="text" class="goal-unit-input" id="waterUnitInput" value="fl oz" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Emoji:</label>
+                            <div class="emoji-selector">
+                                <div class="emoji-options" id="waterEmojiOptions">
+                                    <span class="emoji-option" data-emoji="💧">💧</span>
+                                    <span class="emoji-option" data-emoji="🚰">🚰</span>
+                                    <span class="emoji-option" data-emoji="🥤">🥤</span>
+                                    <span class="emoji-option" data-emoji="💦">💦</span>
+                                    <span class="emoji-option" data-emoji="🌊">🌊</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Apply Changes:</label>
+                            <div class="start-date-options">
+                                <label class="radio-option">
+                                    <input type="radio" name="waterStartDate" value="allTime" checked>
+                                    <span>All time (update historical data)</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="waterStartDate" value="today">
+                                    <span>Starting today</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="waterStartDate" value="custom">
+                                    <span>Custom start date:</span>
+                                </label>
+                                <input type="date" class="custom-date-input" id="waterCustomDate" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="goal-editor" data-goal="protein">
+                    <div class="goal-editor-header">
+                        <span class="goal-emoji-display" id="proteinEmojiDisplay">💪</span>
+                        <input type="text" class="goal-name-input" id="proteinNameInput" value="Protein">
+                    </div>
+                    <div class="goal-editor-controls">
+                        <div class="form-group">
+                            <label>Target Amount:</label>
+                            <div class="target-input-container">
+                                <input type="number" class="goal-target-input" id="proteinTargetInput" value="100" min="1">
+                                <input type="text" class="goal-unit-input" id="proteinUnitInput" value="g" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Emoji:</label>
+                            <div class="emoji-selector">
+                                <div class="emoji-options" id="proteinEmojiOptions">
+                                    <span class="emoji-option" data-emoji="💪">💪</span>
+                                    <span class="emoji-option" data-emoji="🥩">🥩</span>
+                                    <span class="emoji-option" data-emoji="🍗">🍗</span>
+                                    <span class="emoji-option" data-emoji="🥚">🥚</span>
+                                    <span class="emoji-option" data-emoji="🐟">🐟</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Apply Changes:</label>
+                            <div class="start-date-options">
+                                <label class="radio-option">
+                                    <input type="radio" name="proteinStartDate" value="allTime" checked>
+                                    <span>All time (update historical data)</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="proteinStartDate" value="today">
+                                    <span>Starting today</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="proteinStartDate" value="custom">
+                                    <span>Custom start date:</span>
+                                </label>
+                                <input type="date" class="custom-date-input" id="proteinCustomDate" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="goal-editor" data-goal="exercise">
+                    <div class="goal-editor-header">
+                        <span class="goal-emoji-display" id="exerciseEmojiDisplay">🏃</span>
+                        <input type="text" class="goal-name-input" id="exerciseNameInput" value="Exercise">
+                    </div>
+                    <div class="goal-editor-controls">
+                        <div class="form-group">
+                            <label>Target Amount:</label>
+                            <div class="target-input-container">
+                                <input type="number" class="goal-target-input" id="exerciseTargetInput" value="30" min="1">
+                                <input type="text" class="goal-unit-input" id="exerciseUnitInput" value="min" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Emoji:</label>
+                            <div class="emoji-selector">
+                                <div class="emoji-options" id="exerciseEmojiOptions">
+                                    <span class="emoji-option" data-emoji="🏃">🏃</span>
+                                    <span class="emoji-option" data-emoji="🚴">🚴</span>
+                                    <span class="emoji-option" data-emoji="🏋️">🏋️</span>
+                                    <span class="emoji-option" data-emoji="🤸">🤸</span>
+                                    <span class="emoji-option" data-emoji="⚽">⚽</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Apply Changes:</label>
+                            <div class="start-date-options">
+                                <label class="radio-option">
+                                    <input type="radio" name="exerciseStartDate" value="allTime" checked>
+                                    <span>All time (update historical data)</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="exerciseStartDate" value="today">
+                                    <span>Starting today</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="exerciseStartDate" value="custom">
+                                    <span>Custom start date:</span>
+                                </label>
+                                <input type="date" class="custom-date-input" id="exerciseCustomDate" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="secondary-btn" id="cancelEditGoals">Cancel</button>
+                <button class="primary-btn" id="saveEditGoals">Save Goals</button>
             </div>
         </div>
     </div>

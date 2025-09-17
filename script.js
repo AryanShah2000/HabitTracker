@@ -492,6 +492,28 @@ class HabitTracker {
             this.hideAuthModals();
         });
 
+        // Edit Goals Modal event listeners
+        document.getElementById('editGoalsBtn').addEventListener('click', () => {
+            this.showEditGoalsModal();
+        });
+
+        document.getElementById('closeEditGoalsModal').addEventListener('click', () => {
+            this.hideEditGoalsModal();
+        });
+
+        document.getElementById('saveEditGoals').addEventListener('click', () => {
+            this.saveGoals();
+        });
+
+        document.getElementById('cancelEditGoals').addEventListener('click', () => {
+            this.hideEditGoalsModal();
+        });
+
+        // Close edit goals modal when clicking outside
+        document.getElementById('editGoalsModal').addEventListener('click', (e) => {
+            if (e.target.id === 'editGoalsModal') this.hideEditGoalsModal();
+        });
+
         // Switch between modals
         document.getElementById('switchToSignup').addEventListener('click', () => {
             document.getElementById('loginModal').classList.remove('show');
@@ -1049,6 +1071,114 @@ class HabitTracker {
             this.renderCalendar();
             this.loadDailyLogs();
         }
+    }
+
+    // Edit Goals Methods
+    showEditGoalsModal() {
+        // Populate current goal values
+        Object.keys(this.goals).forEach(goalKey => {
+            const goal = this.goals[goalKey];
+            document.getElementById(`${goalKey}NameInput`).value = goal.name;
+            document.getElementById(`${goalKey}TargetInput`).value = goal.target;
+            document.getElementById(`${goalKey}UnitInput`).value = goal.unit;
+            document.getElementById(`${goalKey}EmojiDisplay`).textContent = goal.emoji;
+            
+            // Select current emoji
+            const emojiOptions = document.querySelectorAll(`#${goalKey}EmojiOptions .emoji-option`);
+            emojiOptions.forEach(option => {
+                option.classList.remove('selected');
+                if (option.dataset.emoji === goal.emoji) {
+                    option.classList.add('selected');
+                }
+            });
+        });
+        
+        this.setupEmojiSelectors();
+        this.setupRadioHandlers();
+        document.getElementById('editGoalsModal').classList.add('show');
+    }
+
+    hideEditGoalsModal() {
+        document.getElementById('editGoalsModal').classList.remove('show');
+    }
+
+    setupEmojiSelectors() {
+        Object.keys(this.goals).forEach(goalKey => {
+            const emojiOptions = document.querySelectorAll(`#${goalKey}EmojiOptions .emoji-option`);
+            emojiOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    // Remove selected from all options
+                    emojiOptions.forEach(opt => opt.classList.remove('selected'));
+                    // Add selected to clicked option
+                    option.classList.add('selected');
+                    // Update emoji display
+                    document.getElementById(`${goalKey}EmojiDisplay`).textContent = option.dataset.emoji;
+                });
+            });
+        });
+    }
+
+    setupRadioHandlers() {
+        Object.keys(this.goals).forEach(goalKey => {
+            const radios = document.querySelectorAll(`input[name="${goalKey}StartDate"]`);
+            const customDateInput = document.getElementById(`${goalKey}CustomDate`);
+            
+            radios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    customDateInput.disabled = radio.value !== 'custom';
+                    if (radio.value === 'custom') {
+                        customDateInput.value = this.formatDate(new Date());
+                    }
+                });
+            });
+        });
+    }
+
+    async saveGoals() {
+        const updatedGoals = {};
+        
+        Object.keys(this.goals).forEach(goalKey => {
+            const name = document.getElementById(`${goalKey}NameInput`).value.trim();
+            const target = parseFloat(document.getElementById(`${goalKey}TargetInput`).value);
+            const unit = document.getElementById(`${goalKey}UnitInput`).value.trim();
+            const emoji = document.querySelector(`#${goalKey}EmojiOptions .emoji-option.selected`)?.dataset.emoji || this.goals[goalKey].emoji;
+            
+            if (name && target > 0 && unit) {
+                updatedGoals[goalKey] = {
+                    name,
+                    target,
+                    unit,
+                    emoji
+                };
+            }
+        });
+
+        // Update goals
+        this.goals = updatedGoals;
+        
+        // Save to localStorage
+        localStorage.setItem('habitGoals', JSON.stringify(this.goals));
+        
+        // Update UI
+        this.updateProgress();
+        this.renderCalendar();
+        this.loadDailyLogs();
+        this.updateGoalCards();
+        
+        this.hideEditGoalsModal();
+    }
+
+    updateGoalCards() {
+        Object.keys(this.goals).forEach(goalKey => {
+            const goal = this.goals[goalKey];
+            const card = document.querySelector(`[data-goal="${goalKey}"]`);
+            if (card) {
+                const header = card.querySelector('.goal-header h3');
+                if (header) {
+                    header.textContent = `${goal.emoji} ${goal.name}`;
+                }
+            }
+        });
     }
     
     async submitQuickAdd() {
