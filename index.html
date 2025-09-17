@@ -288,6 +288,31 @@
         </div>
     </div>
 
+    <!-- Edit Activity Modal -->
+    <div class="modal" id="editActivityModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="editActivityTitle">Edit Activity</h3>
+                <button class="close-btn" id="closeEditActivityModal">&times;</button>
+            </div>
+            <div class="slider-container">
+                <label for="editActivitySlider" id="editActivityLabel">Amount:</label>
+                <input type="range" id="editActivitySlider" min="0" max="100" value="0" class="slider">
+                <div class="slider-value-container">
+                    <input type="number" id="editSliderValue" class="slider-value-input" min="0" max="100" value="0">
+                    <span class="unit-display" id="editActivityUnit"></span>
+                </div>
+            </div>
+            <div class="description-container">
+                <label for="editActivityDescription">Description (optional):</label>
+                <textarea id="editActivityDescription" class="description-input" placeholder="Add a note about this activity..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="primary-btn" id="editActivitySubmit">Update Activity</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

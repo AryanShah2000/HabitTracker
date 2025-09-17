@@ -975,22 +975,69 @@ class HabitTracker {
         const activity = this.activities.find(a => a.id == activityId);
         if (!activity) return;
 
+        this.currentEditActivity = activity;
         const goalData = this.goals[activity.goal];
-        const newAmount = prompt(`Edit ${goalData.name} amount (${goalData.unit}):`, activity.amount);
         
-        if (newAmount !== null && !isNaN(newAmount) && parseFloat(newAmount) > 0) {
-            activity.amount = parseFloat(newAmount);
-            
-            const newDescription = prompt('Edit description (optional):', activity.description || '');
-            if (newDescription !== null) {
-                activity.description = newDescription.trim();
-            }
-            
-            this.saveActivitiesLocal();
-            this.updateProgress();
-            this.renderCalendar();
-            this.loadDailyLogs();
-        }
+        // Set up modal
+        document.getElementById('editActivityTitle').textContent = `Edit ${goalData.name}`;
+        document.getElementById('editActivityLabel').textContent = `Amount (${goalData.unit}):`;
+        
+        const slider = document.getElementById('editActivitySlider');
+        const valueInput = document.getElementById('editSliderValue');
+        const unitDisplay = document.getElementById('editActivityUnit');
+        
+        slider.max = goalData.target * 2;
+        valueInput.max = goalData.target * 2;
+        slider.value = activity.amount;
+        valueInput.value = activity.amount;
+        
+        // Update unit display
+        unitDisplay.textContent = goalData.unit;
+        
+        // Set description
+        document.getElementById('editActivityDescription').value = activity.description || '';
+        
+        // Remove any existing event listeners by cloning elements
+        const newSlider = slider.cloneNode(true);
+        const newValueInput = valueInput.cloneNode(true);
+        slider.parentNode.replaceChild(newSlider, slider);
+        valueInput.parentNode.replaceChild(newValueInput, valueInput);
+        
+        // Add fresh event listeners
+        newSlider.addEventListener('input', (e) => {
+            newValueInput.value = e.target.value;
+        });
+        
+        newValueInput.addEventListener('input', (e) => {
+            const value = Math.max(0, Math.min(parseFloat(e.target.value) || 0, goalData.target * 2));
+            newSlider.value = value;
+            newValueInput.value = value;
+        });
+        
+        document.getElementById('editActivityModal').classList.add('show');
+    }
+
+    hideEditActivityModal() {
+        document.getElementById('editActivityModal').classList.remove('show');
+        document.getElementById('editActivityDescription').value = '';
+        this.currentEditActivity = null;
+    }
+
+    async submitEditActivity() {
+        const amount = parseFloat(document.getElementById('editSliderValue').value);
+        if (amount <= 0 || !this.currentEditActivity) return;
+        
+        const description = document.getElementById('editActivityDescription').value.trim();
+        
+        // Update the activity
+        this.currentEditActivity.amount = amount;
+        this.currentEditActivity.description = description || null;
+        
+        this.saveActivitiesLocal();
+        this.updateProgress();
+        this.renderCalendar();
+        this.loadDailyLogs();
+        this.hideEditActivityModal();
     }
 
     // Delete activity
@@ -1110,6 +1157,19 @@ class HabitTracker {
         
         document.getElementById('quickAddSubmit').addEventListener('click', async () => {
             await this.submitQuickAdd();
+        });
+
+        // Edit activity modal controls
+        document.getElementById('closeEditActivityModal').addEventListener('click', () => {
+            this.hideEditActivityModal();
+        });
+        
+        document.getElementById('editActivityModal').addEventListener('click', (e) => {
+            if (e.target.id === 'editActivityModal') this.hideEditActivityModal();
+        });
+        
+        document.getElementById('editActivitySubmit').addEventListener('click', async () => {
+            await this.submitEditActivity();
         });
     }
     
