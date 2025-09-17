@@ -898,13 +898,17 @@ class HabitTracker {
                 });
                 
                 return `
-                    <div class="daily-log-item">
+                    <div class="daily-log-item" data-activity-id="${activity.id}">
                         <div class="daily-log-info">
                             <span class="daily-log-goal">${goalData.emoji} ${goalData.name}</span>
                             ${activity.description ? `<span class="daily-log-description">"${activity.description}"</span>` : ''}
                             <span class="daily-log-amount">${activity.amount} ${goalData.unit}</span>
                         </div>
-                        <div class="daily-log-time">${time}</div>
+                        <div class="daily-log-actions">
+                            <span class="daily-log-time">${time}</span>
+                            <button class="action-btn edit-btn" onclick="habitTracker.editActivity('${activity.id}')" title="Edit">✏️</button>
+                            <button class="action-btn delete-btn" onclick="habitTracker.deleteActivity('${activity.id}')" title="Delete">🗑️</button>
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -960,6 +964,40 @@ class HabitTracker {
         document.getElementById('quickAddModal').classList.remove('show');
         document.getElementById('quickAddDescription').value = '';
         this.currentQuickAddGoal = null;
+    }
+
+    // Edit activity
+    editActivity(activityId) {
+        const activity = this.activities.find(a => a.id == activityId);
+        if (!activity) return;
+
+        const goalData = this.goals[activity.goal];
+        const newAmount = prompt(`Edit ${goalData.name} amount (${goalData.unit}):`, activity.amount);
+        
+        if (newAmount !== null && !isNaN(newAmount) && parseFloat(newAmount) > 0) {
+            activity.amount = parseFloat(newAmount);
+            
+            const newDescription = prompt('Edit description (optional):', activity.description || '');
+            if (newDescription !== null) {
+                activity.description = newDescription.trim();
+            }
+            
+            this.saveActivitiesLocal();
+            this.updateProgress();
+            this.renderCalendar();
+            this.loadDailyLogs();
+        }
+    }
+
+    // Delete activity
+    deleteActivity(activityId) {
+        if (confirm('Are you sure you want to delete this activity?')) {
+            this.activities = this.activities.filter(a => a.id != activityId);
+            this.saveActivitiesLocal();
+            this.updateProgress();
+            this.renderCalendar();
+            this.loadDailyLogs();
+        }
     }
     
     async submitQuickAdd() {
@@ -1022,25 +1060,13 @@ class HabitTracker {
             this.showLogModal();
         });
         
-        document.getElementById('seeActivityBtn').addEventListener('click', () => {
-            this.showActivityModal();
-        });
-        
         document.getElementById('closeLogModal').addEventListener('click', () => {
             this.hideLogModal();
-        });
-        
-        document.getElementById('closeActivityModal').addEventListener('click', () => {
-            this.hideActivityModal();
         });
         
         // Close modals when clicking outside
         document.getElementById('logModal').addEventListener('click', (e) => {
             if (e.target.id === 'logModal') this.hideLogModal();
-        });
-        
-        document.getElementById('activityModal').addEventListener('click', (e) => {
-            if (e.target.id === 'activityModal') this.hideActivityModal();
         });
         
         // Form submission
@@ -1095,15 +1121,6 @@ class HabitTracker {
     hideLogModal() {
         document.getElementById('logModal').classList.remove('show');
         this.editingActivity = null;
-    }
-    
-    showActivityModal() {
-        this.renderActivityList();
-        document.getElementById('activityModal').classList.add('show');
-    }
-    
-    hideActivityModal() {
-        document.getElementById('activityModal').classList.remove('show');
     }
     
     // Activity Management
@@ -1165,85 +1182,6 @@ class HabitTracker {
             this.updateProgress();
             this.renderCalendar();
             this.hideLogModal();
-        }
-    }
-    
-    renderActivityList() {
-        const container = document.getElementById('activityList');
-        container.innerHTML = '';
-        
-        if (this.activities.length === 0) {
-            container.innerHTML = '<div style="text-align: center; color: #718096; padding: 20px;">No activities logged yet.</div>';
-            return;
-        }
-        
-        // Sort activities by date (newest first)
-        const sortedActivities = [...this.activities].sort((a, b) => {
-            const dateComparison = new Date(b.date) - new Date(a.date);
-            if (dateComparison !== 0) return dateComparison;
-            return new Date(b.timestamp) - new Date(a.timestamp);
-        });
-        
-        sortedActivities.forEach(activity => {
-            const activityElement = document.createElement('div');
-            activityElement.className = `activity-item ${activity.goal}`;
-            
-            const goal = this.goals[activity.goal];
-            const date = new Date(activity.date).toLocaleDateString();
-            
-            activityElement.innerHTML = `
-                <div class="activity-info">
-                    <span class="activity-goal">${goal.emoji} ${goal.name}</span>
-                    ${activity.description ? `<span class="activity-description">"${activity.description}"</span>` : ''}
-                    <span class="activity-amount">${activity.amount} ${goal.unit}</span>
-                    <span class="activity-date">• ${date}</span>
-                </div>
-                <div class="activity-actions">
-                    <button class="edit-btn" onclick="habitTracker.editActivity('${activity.id}')">Edit</button>
-                    <button class="delete-btn" onclick="habitTracker.deleteActivity('${activity.id}')">Delete</button>
-                </div>
-            `;
-            
-            container.appendChild(activityElement);
-        });
-    }
-    
-    editActivity(id) {
-        const activity = this.activities.find(a => a.id === id);
-        if (!activity) return;
-        
-        this.editingActivity = activity;
-        document.getElementById('goalSelect').value = activity.goal;
-        document.getElementById('dateInput').value = activity.date;
-        document.getElementById('amountInput').value = activity.amount;
-        
-        document.querySelector('#logModal .modal-header h3').textContent = 'Edit Activity';
-        this.hideActivityModal();
-        this.showLogModal();
-    }
-    
-    async deleteActivity(id) {
-        if (confirm('Are you sure you want to delete this activity?')) {
-            try {
-                if (this.isOnline) {
-                    await this.apiCall('DELETE', { id });
-                }
-                
-                this.activities = this.activities.filter(a => a.id !== id);
-                await this.saveActivities();
-                this.updateProgress();
-                this.renderCalendar();
-                this.renderActivityList();
-                
-            } catch (error) {
-                console.log('Failed to delete from server, deleted locally:', error.message);
-                // Still remove locally and update UI
-                this.activities = this.activities.filter(a => a.id !== id);
-                this.saveActivitiesLocal();
-                this.updateProgress();
-                this.renderCalendar();
-                this.renderActivityList();
-            }
         }
     }
 }

@@ -1131,23 +1131,14 @@ header h1 {
 .daily-log-info {
     flex: 1;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
-    flex-wrap: wrap;
-    flex-direction: column;
+    flex-wrap: nowrap;
 }
 
 .daily-log-goal {
     font-weight: 600;
     color: white;
-}
-
-.daily-log-amount-time {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-    margin-top: 4px;
 }
 
 .daily-log-amount {
@@ -1166,6 +1157,30 @@ header h1 {
     font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.6);
     font-weight: 400;
+    margin-right: 8px;
+}
+
+.daily-log-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    opacity: 0.7;
+}
+
+.action-btn:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
 }
 
 /* Description Input Styles */
