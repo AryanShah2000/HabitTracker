@@ -7,6 +7,9 @@ class HabitTracker {
             exercise: { name: 'Exercise', target: 30, unit: 'min', emoji: '🏃' }
         };
         
+        // Load saved goals from localStorage if available
+        this.loadGoalsFromStorage();
+        
         this.currentDate = new Date();
         this.selectedDate = new Date(); // New property for calendar selection
         this.currentMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
@@ -50,6 +53,7 @@ class HabitTracker {
         
         console.log('User authenticated, initializing main app');
         // User is authenticated, proceed with app initialization
+        this.loadGoalsFromStorage(); // Load saved goals
         await this.loadActivities();
         this.updateCurrentDate();
         this.updateProgress();
@@ -196,6 +200,7 @@ class HabitTracker {
                 localStorage.setItem('authToken', data.token);
                 
                 // Initialize the app
+                this.loadGoalsFromStorage(); // Load saved goals
                 await this.loadActivities();
                 this.updateCurrentDate();
                 this.updateProgress();
@@ -241,6 +246,7 @@ class HabitTracker {
                 localStorage.setItem('authToken', data.token);
                 
                 // Initialize the app for new user
+                this.loadGoalsFromStorage(); // Load saved goals
                 this.activities = []; // Start with empty activities
                 this.updateProgress();
                 this.setupEventListeners();
@@ -693,6 +699,25 @@ class HabitTracker {
         localStorage.setItem('habitTracker_activities', JSON.stringify(this.activities));
     }
     
+    // Goals persistence methods
+    loadGoalsFromStorage() {
+        const stored = localStorage.getItem('habitGoals');
+        if (stored) {
+            try {
+                const savedGoals = JSON.parse(stored);
+                // Merge saved goals with defaults to ensure all required goals exist
+                this.goals = {
+                    water: { ...this.goals.water, ...savedGoals.water },
+                    protein: { ...this.goals.protein, ...savedGoals.protein },
+                    exercise: { ...this.goals.exercise, ...savedGoals.exercise }
+                };
+                console.log('Loaded goals from storage:', this.goals);
+            } catch (error) {
+                console.error('Error loading goals from storage:', error);
+            }
+        }
+    }
+    
     // Combined Load Activities (try API first, fallback to local)
     async loadActivities() {
         // Always load from local storage first to have immediate data
@@ -1058,7 +1083,7 @@ class HabitTracker {
         this.saveActivitiesLocal();
         this.updateProgress();
         this.renderCalendar();
-        this.loadDailyLogs();
+        this.showDailyLogs(this.selectedDate);
         this.hideEditActivityModal();
     }
 
@@ -1069,7 +1094,7 @@ class HabitTracker {
             this.saveActivitiesLocal();
             this.updateProgress();
             this.renderCalendar();
-            this.loadDailyLogs();
+            this.showDailyLogs(this.selectedDate);
         }
     }
 
@@ -1205,7 +1230,7 @@ class HabitTracker {
         // Update UI
         this.updateProgress();
         this.renderCalendar();
-        this.loadDailyLogs();
+        this.showDailyLogs(this.selectedDate);
         this.updateGoalCards();
         
         this.hideEditGoalsModal();
