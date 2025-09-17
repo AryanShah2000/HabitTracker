@@ -366,6 +366,104 @@ class HabitTracker {
         }
     }
     
+    showLoginModal() {
+        const loginModal = document.getElementById('loginModal');
+        console.log('showLoginModal called, loginModal element:', loginModal);
+        
+        if (loginModal) {
+            // Clear any existing styles first
+            this.hideAuthModals();
+            
+            // Use requestAnimationFrame for Safari compatibility
+            requestAnimationFrame(() => {
+                loginModal.classList.add('show');
+                
+                // Force styles for Safari compatibility
+                loginModal.style.cssText = `
+                    display: flex !important;
+                    position: fixed !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    width: 100% !important;
+                    height: 100% !important;
+                    background: rgba(0, 0, 0, 0.7) !important;
+                    z-index: 9999 !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                `;
+                
+                const modalContent = loginModal.querySelector('.modal-content');
+                if (modalContent) {
+                    modalContent.style.cssText = `
+                        display: block !important;
+                        background: white !important;
+                        color: #333 !important;
+                        padding: 24px !important;
+                        border-radius: 12px !important;
+                        max-width: 400px !important;
+                        width: 90% !important;
+                        z-index: 10000 !important;
+                        box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+                        border: 1px solid #ddd !important;
+                    `;
+                }
+                
+                console.log('Login modal should now be visible');
+            });
+        } else {
+            console.error('Login modal not found!');
+        }
+    }
+    
+    showSignupModal() {
+        const signupModal = document.getElementById('signupModal');
+        console.log('showSignupModal called, signupModal element:', signupModal);
+        
+        if (signupModal) {
+            // Clear any existing styles first
+            this.hideAuthModals();
+            
+            // Use requestAnimationFrame for Safari compatibility
+            requestAnimationFrame(() => {
+                signupModal.classList.add('show');
+                
+                // Force styles for Safari compatibility
+                signupModal.style.cssText = `
+                    display: flex !important;
+                    position: fixed !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    width: 100% !important;
+                    height: 100% !important;
+                    background: rgba(0, 0, 0, 0.7) !important;
+                    z-index: 9999 !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                `;
+                
+                const modalContent = signupModal.querySelector('.modal-content');
+                if (modalContent) {
+                    modalContent.style.cssText = `
+                        display: block !important;
+                        background: white !important;
+                        color: #333 !important;
+                        padding: 24px !important;
+                        border-radius: 12px !important;
+                        max-width: 400px !important;
+                        width: 90% !important;
+                        z-index: 10000 !important;
+                        box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+                        border: 1px solid #ddd !important;
+                    `;
+                }
+                
+                console.log('Signup modal should now be visible');
+            });
+        } else {
+            console.error('Signup modal not found!');
+        }
+    }
+    
     setupAuthEventListeners() {
         // Prevent duplicate auth event listeners
         if (this.authEventListenersSetup) {
@@ -376,6 +474,13 @@ class HabitTracker {
         console.log('Setting up authentication event listeners...');
         this.authEventListenersSetup = true;
         
+        // Use more robust event listener setup with timeout for Safari
+        setTimeout(() => {
+            this.attachAuthEventListeners();
+        }, 100);
+    }
+    
+    attachAuthEventListeners() {
         // Show login modal
         const showLoginBtn = document.getElementById('showLoginBtn');
         const authRequiredLogin = document.getElementById('authRequiredLogin');
@@ -384,52 +489,21 @@ class HabitTracker {
         console.log('authRequiredLogin element:', authRequiredLogin);
         
         if (showLoginBtn) {
-            showLoginBtn.addEventListener('click', () => {
+            showLoginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 console.log('Show login button clicked');
-                document.getElementById('loginModal').classList.add('show');
-            });
+                this.showLoginModal();
+            }, true);
         }
         
         if (authRequiredLogin) {
-            authRequiredLogin.addEventListener('click', () => {
+            authRequiredLogin.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 console.log('Auth required login button clicked');
-                
-                const loginModal = document.getElementById('loginModal');
-                console.log('loginModal element:', loginModal);
-                if (loginModal) {
-                    loginModal.classList.add('show');
-                    // Force the modal to be visible with inline styles and high z-index
-                    loginModal.style.display = 'flex';
-                    loginModal.style.position = 'fixed';
-                    loginModal.style.top = '0';
-                    loginModal.style.left = '0';
-                    loginModal.style.width = '100%';
-                    loginModal.style.height = '100%';
-                    loginModal.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-                    loginModal.style.zIndex = '9999';
-                    loginModal.style.alignItems = 'center';
-                    loginModal.style.justifyContent = 'center';
-                    
-                    // Also force the modal content to be visible
-                    const modalContent = loginModal.querySelector('.modal-content');
-                    if (modalContent) {
-                        modalContent.style.display = 'block';
-                        modalContent.style.backgroundColor = 'white';
-                        modalContent.style.padding = '24px';
-                        modalContent.style.borderRadius = '12px';
-                        modalContent.style.maxWidth = '400px';
-                        modalContent.style.width = '90%';
-                        modalContent.style.zIndex = '10000';
-                        modalContent.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
-                        modalContent.style.border = '1px solid #ddd';
-                        console.log('Styled modal content as well');
-                    }
-                    
-                    console.log('Added show class and inline styles to login modal');
-                } else {
-                    console.log('Login modal not found!');
-                }
-            });
+                this.showLoginModal();
+            }, true);
         }
 
         // Show signup modal
@@ -440,51 +514,21 @@ class HabitTracker {
         console.log('authRequiredSignup element:', authRequiredSignup);
         
         if (showSignupBtn) {
-            showSignupBtn.addEventListener('click', () => {
+            showSignupBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 console.log('Show signup button clicked');
-                document.getElementById('signupModal').classList.add('show');
-            });
+                this.showSignupModal();
+            }, true);
         }
         
         if (authRequiredSignup) {
-            authRequiredSignup.addEventListener('click', () => {
+            authRequiredSignup.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 console.log('Auth required signup button clicked');
-                const signupModal = document.getElementById('signupModal');
-                console.log('signupModal element:', signupModal);
-                if (signupModal) {
-                    signupModal.classList.add('show');
-                    // Force the modal to be visible with inline styles and high z-index
-                    signupModal.style.display = 'flex';
-                    signupModal.style.position = 'fixed';
-                    signupModal.style.top = '0';
-                    signupModal.style.left = '0';
-                    signupModal.style.width = '100%';
-                    signupModal.style.height = '100%';
-                    signupModal.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-                    signupModal.style.zIndex = '9999';
-                    signupModal.style.alignItems = 'center';
-                    signupModal.style.justifyContent = 'center';
-                    
-                    // Also force the modal content to be visible
-                    const modalContent = signupModal.querySelector('.modal-content');
-                    if (modalContent) {
-                        modalContent.style.display = 'block';
-                        modalContent.style.backgroundColor = 'white';
-                        modalContent.style.padding = '24px';
-                        modalContent.style.borderRadius = '12px';
-                        modalContent.style.maxWidth = '400px';
-                        modalContent.style.width = '90%';
-                        modalContent.style.zIndex = '10000';
-                        modalContent.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
-                        modalContent.style.border = '1px solid #ddd';
-                        console.log('Styled signup modal content as well');
-                    }
-                    
-                    console.log('Added show class and inline styles to signup modal');
-                } else {
-                    console.log('Signup modal not found!');
-                }
-            });
+                this.showSignupModal();
+            }, true);
         }
 
         // Close modals
