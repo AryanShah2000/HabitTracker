@@ -323,139 +323,130 @@
             </div>
             <div class="goals-editor">
                 <div class="goal-editor" data-goal="water">
-                    <div class="goal-editor-header">
+                    <div class="goal-header-row">
                         <span class="goal-emoji-display" id="waterEmojiDisplay">💧</span>
                         <input type="text" class="goal-name-input" id="waterNameInput" value="Water">
+                        <div class="target-inputs">
+                            <input type="number" class="goal-target-input" id="waterTargetInput" value="64" min="1">
+                            <input type="text" class="goal-unit-input" id="waterUnitInput" value="fl oz" maxlength="10">
+                        </div>
                     </div>
-                    <div class="goal-editor-controls">
-                        <div class="form-group">
-                            <label>Target Amount:</label>
-                            <div class="target-input-container">
-                                <input type="number" class="goal-target-input" id="waterTargetInput" value="64" min="1">
-                                <input type="text" class="goal-unit-input" id="waterUnitInput" value="fl oz" maxlength="10">
+                    <div class="emoji-section">
+                        <label class="section-label">Choose Emoji:</label>
+                        <div class="emoji-selector">
+                            <div class="emoji-options" id="waterEmojiOptions">
+                                <span class="emoji-option" data-emoji="💧">💧</span>
+                                <span class="emoji-option" data-emoji="🚰">🚰</span>
+                                <span class="emoji-option" data-emoji="🥤">🥤</span>
+                                <span class="emoji-option" data-emoji="💦">💦</span>
+                                <span class="emoji-option" data-emoji="🌊">🌊</span>
+                                <span class="emoji-option custom-emoji" data-emoji="">+</span>
                             </div>
+                            <input type="text" class="custom-emoji-input" id="waterCustomEmoji" placeholder="Enter emoji" maxlength="2" style="display: none;">
                         </div>
-                        <div class="form-group">
-                            <label>Emoji:</label>
-                            <div class="emoji-selector">
-                                <div class="emoji-options" id="waterEmojiOptions">
-                                    <span class="emoji-option" data-emoji="💧">💧</span>
-                                    <span class="emoji-option" data-emoji="🚰">🚰</span>
-                                    <span class="emoji-option" data-emoji="🥤">🥤</span>
-                                    <span class="emoji-option" data-emoji="💦">💦</span>
-                                    <span class="emoji-option" data-emoji="🌊">🌊</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Apply Changes:</label>
-                            <div class="start-date-options">
-                                <label class="radio-option">
-                                    <input type="radio" name="waterStartDate" value="allTime" checked>
-                                    <span>All time (update historical data)</span>
-                                </label>
-                                <label class="radio-option">
-                                    <input type="radio" name="waterStartDate" value="today">
-                                    <span>Starting today</span>
-                                </label>
-                                <label class="radio-option">
-                                    <input type="radio" name="waterStartDate" value="custom">
-                                    <span>Custom start date:</span>
-                                </label>
+                    </div>
+                    <div class="apply-section">
+                        <label class="section-label">Apply Changes:</label>
+                        <div class="apply-options">
+                            <label class="apply-option">
+                                <input type="radio" name="waterStartDate" value="allTime" checked>
+                                <span class="apply-text">All time</span>
+                            </label>
+                            <label class="apply-option">
+                                <input type="radio" name="waterStartDate" value="today">
+                                <span class="apply-text">Today</span>
+                            </label>
+                            <label class="apply-option">
+                                <input type="radio" name="waterStartDate" value="custom">
+                                <span class="apply-text">Custom:</span>
                                 <input type="date" class="custom-date-input" id="waterCustomDate" disabled>
-                            </div>
+                            </label>
                         </div>
                     </div>
                 </div>
 
                 <div class="goal-editor" data-goal="protein">
-                    <div class="goal-editor-header">
+                    <div class="goal-header-row">
                         <span class="goal-emoji-display" id="proteinEmojiDisplay">💪</span>
                         <input type="text" class="goal-name-input" id="proteinNameInput" value="Protein">
+                        <div class="target-inputs">
+                            <input type="number" class="goal-target-input" id="proteinTargetInput" value="100" min="1">
+                            <input type="text" class="goal-unit-input" id="proteinUnitInput" value="g" maxlength="10">
+                        </div>
                     </div>
-                    <div class="goal-editor-controls">
-                        <div class="form-group">
-                            <label>Target Amount:</label>
-                            <div class="target-input-container">
-                                <input type="number" class="goal-target-input" id="proteinTargetInput" value="100" min="1">
-                                <input type="text" class="goal-unit-input" id="proteinUnitInput" value="g" maxlength="10">
+                    <div class="emoji-section">
+                        <label class="section-label">Choose Emoji:</label>
+                        <div class="emoji-selector">
+                            <div class="emoji-options" id="proteinEmojiOptions">
+                                <span class="emoji-option" data-emoji="💪">💪</span>
+                                <span class="emoji-option" data-emoji="🥩">🥩</span>
+                                <span class="emoji-option" data-emoji="🍗">🍗</span>
+                                <span class="emoji-option" data-emoji="🥚">🥚</span>
+                                <span class="emoji-option" data-emoji="🐟">🐟</span>
+                                <span class="emoji-option custom-emoji" data-emoji="">+</span>
                             </div>
+                            <input type="text" class="custom-emoji-input" id="proteinCustomEmoji" placeholder="Enter emoji" maxlength="2" style="display: none;">
                         </div>
-                        <div class="form-group">
-                            <label>Emoji:</label>
-                            <div class="emoji-selector">
-                                <div class="emoji-options" id="proteinEmojiOptions">
-                                    <span class="emoji-option" data-emoji="💪">💪</span>
-                                    <span class="emoji-option" data-emoji="🥩">🥩</span>
-                                    <span class="emoji-option" data-emoji="🍗">🍗</span>
-                                    <span class="emoji-option" data-emoji="🥚">🥚</span>
-                                    <span class="emoji-option" data-emoji="🐟">🐟</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Apply Changes:</label>
-                            <div class="start-date-options">
-                                <label class="radio-option">
-                                    <input type="radio" name="proteinStartDate" value="allTime" checked>
-                                    <span>All time (update historical data)</span>
-                                </label>
-                                <label class="radio-option">
-                                    <input type="radio" name="proteinStartDate" value="today">
-                                    <span>Starting today</span>
-                                </label>
-                                <label class="radio-option">
-                                    <input type="radio" name="proteinStartDate" value="custom">
-                                    <span>Custom start date:</span>
-                                </label>
+                    </div>
+                    <div class="apply-section">
+                        <label class="section-label">Apply Changes:</label>
+                        <div class="apply-options">
+                            <label class="apply-option">
+                                <input type="radio" name="proteinStartDate" value="allTime" checked>
+                                <span class="apply-text">All time</span>
+                            </label>
+                            <label class="apply-option">
+                                <input type="radio" name="proteinStartDate" value="today">
+                                <span class="apply-text">Today</span>
+                            </label>
+                            <label class="apply-option">
+                                <input type="radio" name="proteinStartDate" value="custom">
+                                <span class="apply-text">Custom:</span>
                                 <input type="date" class="custom-date-input" id="proteinCustomDate" disabled>
-                            </div>
+                            </label>
                         </div>
                     </div>
                 </div>
 
                 <div class="goal-editor" data-goal="exercise">
-                    <div class="goal-editor-header">
+                    <div class="goal-header-row">
                         <span class="goal-emoji-display" id="exerciseEmojiDisplay">🏃</span>
                         <input type="text" class="goal-name-input" id="exerciseNameInput" value="Exercise">
+                        <div class="target-inputs">
+                            <input type="number" class="goal-target-input" id="exerciseTargetInput" value="30" min="1">
+                            <input type="text" class="goal-unit-input" id="exerciseUnitInput" value="min" maxlength="10">
+                        </div>
                     </div>
-                    <div class="goal-editor-controls">
-                        <div class="form-group">
-                            <label>Target Amount:</label>
-                            <div class="target-input-container">
-                                <input type="number" class="goal-target-input" id="exerciseTargetInput" value="30" min="1">
-                                <input type="text" class="goal-unit-input" id="exerciseUnitInput" value="min" maxlength="10">
+                    <div class="emoji-section">
+                        <label class="section-label">Choose Emoji:</label>
+                        <div class="emoji-selector">
+                            <div class="emoji-options" id="exerciseEmojiOptions">
+                                <span class="emoji-option" data-emoji="🏃">🏃</span>
+                                <span class="emoji-option" data-emoji="🚴">🚴</span>
+                                <span class="emoji-option" data-emoji="🏋️">🏋️</span>
+                                <span class="emoji-option" data-emoji="🤸">🤸</span>
+                                <span class="emoji-option" data-emoji="⚽">⚽</span>
+                                <span class="emoji-option custom-emoji" data-emoji="">+</span>
                             </div>
+                            <input type="text" class="custom-emoji-input" id="exerciseCustomEmoji" placeholder="Enter emoji" maxlength="2" style="display: none;">
                         </div>
-                        <div class="form-group">
-                            <label>Emoji:</label>
-                            <div class="emoji-selector">
-                                <div class="emoji-options" id="exerciseEmojiOptions">
-                                    <span class="emoji-option" data-emoji="🏃">🏃</span>
-                                    <span class="emoji-option" data-emoji="🚴">🚴</span>
-                                    <span class="emoji-option" data-emoji="🏋️">🏋️</span>
-                                    <span class="emoji-option" data-emoji="🤸">🤸</span>
-                                    <span class="emoji-option" data-emoji="⚽">⚽</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Apply Changes:</label>
-                            <div class="start-date-options">
-                                <label class="radio-option">
-                                    <input type="radio" name="exerciseStartDate" value="allTime" checked>
-                                    <span>All time (update historical data)</span>
-                                </label>
-                                <label class="radio-option">
-                                    <input type="radio" name="exerciseStartDate" value="today">
-                                    <span>Starting today</span>
-                                </label>
-                                <label class="radio-option">
-                                    <input type="radio" name="exerciseStartDate" value="custom">
-                                    <span>Custom start date:</span>
-                                </label>
+                    </div>
+                    <div class="apply-section">
+                        <label class="section-label">Apply Changes:</label>
+                        <div class="apply-options">
+                            <label class="apply-option">
+                                <input type="radio" name="exerciseStartDate" value="allTime" checked>
+                                <span class="apply-text">All time</span>
+                            </label>
+                            <label class="apply-option">
+                                <input type="radio" name="exerciseStartDate" value="today">
+                                <span class="apply-text">Today</span>
+                            </label>
+                            <label class="apply-option">
+                                <input type="radio" name="exerciseStartDate" value="custom">
+                                <span class="apply-text">Custom:</span>
                                 <input type="date" class="custom-date-input" id="exerciseCustomDate" disabled>
-                            </div>
+                            </label>
                         </div>
                     </div>
                 </div>

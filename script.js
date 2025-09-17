@@ -1105,15 +1105,45 @@ class HabitTracker {
     setupEmojiSelectors() {
         Object.keys(this.goals).forEach(goalKey => {
             const emojiOptions = document.querySelectorAll(`#${goalKey}EmojiOptions .emoji-option`);
+            const customEmojiInput = document.getElementById(`${goalKey}CustomEmoji`);
+            
             emojiOptions.forEach(option => {
                 option.addEventListener('click', () => {
                     // Remove selected from all options
                     emojiOptions.forEach(opt => opt.classList.remove('selected'));
                     // Add selected to clicked option
                     option.classList.add('selected');
-                    // Update emoji display
-                    document.getElementById(`${goalKey}EmojiDisplay`).textContent = option.dataset.emoji;
+                    
+                    if (option.classList.contains('custom-emoji')) {
+                        // Show custom emoji input
+                        customEmojiInput.style.display = 'inline-block';
+                        customEmojiInput.focus();
+                    } else {
+                        // Hide custom emoji input and update display
+                        customEmojiInput.style.display = 'none';
+                        document.getElementById(`${goalKey}EmojiDisplay`).textContent = option.dataset.emoji;
+                    }
                 });
+            });
+            
+            // Handle custom emoji input
+            customEmojiInput.addEventListener('input', (e) => {
+                const emoji = e.target.value.trim();
+                if (emoji) {
+                    document.getElementById(`${goalKey}EmojiDisplay`).textContent = emoji;
+                    // Set data-emoji for the custom option
+                    const customOption = document.querySelector(`#${goalKey}EmojiOptions .custom-emoji`);
+                    customOption.dataset.emoji = emoji;
+                }
+            });
+            
+            customEmojiInput.addEventListener('blur', () => {
+                if (!customEmojiInput.value.trim()) {
+                    customEmojiInput.style.display = 'none';
+                    // Deselect custom option if no emoji entered
+                    const customOption = document.querySelector(`#${goalKey}EmojiOptions .custom-emoji`);
+                    customOption.classList.remove('selected');
+                }
             });
         });
     }
@@ -1141,7 +1171,20 @@ class HabitTracker {
             const name = document.getElementById(`${goalKey}NameInput`).value.trim();
             const target = parseFloat(document.getElementById(`${goalKey}TargetInput`).value);
             const unit = document.getElementById(`${goalKey}UnitInput`).value.trim();
-            const emoji = document.querySelector(`#${goalKey}EmojiOptions .emoji-option.selected`)?.dataset.emoji || this.goals[goalKey].emoji;
+            
+            // Get emoji - either from selected option or custom input
+            let emoji = this.goals[goalKey].emoji; // fallback
+            const selectedOption = document.querySelector(`#${goalKey}EmojiOptions .emoji-option.selected`);
+            if (selectedOption) {
+                if (selectedOption.classList.contains('custom-emoji')) {
+                    // Use custom emoji input value
+                    const customEmoji = document.getElementById(`${goalKey}CustomEmoji`).value.trim();
+                    emoji = customEmoji || this.goals[goalKey].emoji;
+                } else {
+                    // Use regular emoji option
+                    emoji = selectedOption.dataset.emoji;
+                }
+            }
             
             if (name && target > 0 && unit) {
                 updatedGoals[goalKey] = {
