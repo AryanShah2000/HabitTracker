@@ -2207,125 +2207,180 @@ header h1 {
 
 /* iOS PWA-specific styles */
 @media all and (display-mode: standalone) {
-    /* iOS PWA detection and fixes */
+    /* Completely override glass effects for PWA mode */
     
-    /* Enhanced glass effect for PWA */
+    /* Remove all backdrop filters and use solid backgrounds */
     .glass,
     .header-content,
     .habit-item,
     .log-activity-btn,
     button,
     .modal-content {
-        background: rgba(255, 255, 255, 0.15) !important;
-        backdrop-filter: blur(10px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(10px) saturate(180%) !important;
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
-        box-shadow: 
-            0 8px 32px rgba(0, 0, 0, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
     }
     
-    /* Header specific */
+    /* Header - solid dark background with gradient */
     .header-content {
-        background: rgba(102, 126, 234, 0.25) !important;
-        border: 1px solid rgba(255, 255, 255, 0.4) !important;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+        border: 2px solid #4facfe !important;
+        color: #ffffff !important;
     }
     
-    /* Habit items */
+    /* Habit items - dark background with subtle accent */
     .habit-item {
-        background: rgba(255, 255, 255, 0.12) !important;
-        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        background: linear-gradient(135deg, #2a2a3e 0%, #1e1e2e 100%) !important;
+        border: 1px solid #667eea !important;
+        color: #ffffff !important;
     }
     
-    /* Buttons */
+    /* Buttons - solid colored backgrounds */
     button, .log-activity-btn {
-        background: rgba(99, 102, 241, 0.3) !important;
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
-        color: white !important;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+        border: 1px solid #4facfe !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
     }
     
-    /* Text contrast */
-    .user-info,
-    .habit-info h3,
+    .edit-goals-btn {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        border: 1px solid #34d399 !important;
+    }
+    
+    .logout-btn {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+        border: 1px solid #f87171 !important;
+    }
+    
+    /* Increment buttons */
+    .increment-btn {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+        border: 1px solid #06b6d4 !important;
+        color: #ffffff !important;
+        font-weight: bold !important;
+    }
+    
+    /* Text elements - ensure proper contrast */
+    .user-info {
+        color: #e0e7ff !important;
+        font-weight: 500 !important;
+    }
+    
+    .habit-info h3 {
+        color: #ffffff !important;
+        font-weight: 600 !important;
+    }
+    
     .habit-info p,
     .current-value {
-        color: white !important;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+        color: #d1d5db !important;
+        font-weight: 500 !important;
     }
     
-    /* Progress bars */
+    /* Progress bars - solid backgrounds */
     .progress-container {
-        background: rgba(255, 255, 255, 0.2) !important;
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        background: #374151 !important;
+        border: 1px solid #6b7280 !important;
+    }
+    
+    .progress-bar {
+        background: linear-gradient(90deg, #10b981 0%, #34d399 100%) !important;
     }
     
     /* Date display */
     .date-display {
-        background: rgba(255, 255, 255, 0.15) !important;
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
-        color: white !important;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+        background: linear-gradient(135deg, #374151 0%, #1f2937 100%) !important;
+        border: 1px solid #6b7280 !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
     }
     
     /* Modal improvements */
     .modal {
-        background: rgba(0, 0, 0, 0.7) !important;
+        background: rgba(0, 0, 0, 0.85) !important;
     }
     
     .modal-content {
-        background: rgba(26, 26, 46, 0.9) !important;
-        border: 2px solid rgba(255, 255, 255, 0.3) !important;
-        box-shadow: 
-            0 20px 40px rgba(0, 0, 0, 0.6),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+        border: 2px solid #4facfe !important;
+        color: #ffffff !important;
     }
     
-    /* Enhanced contrast for critical elements */
+    /* Input fields */
+    input, select, textarea {
+        background: #374151 !important;
+        border: 1px solid #6b7280 !important;
+        color: #ffffff !important;
+    }
+    
+    input::placeholder {
+        color: #9ca3af !important;
+    }
+    
+    /* Form elements */
+    .goal-editor {
+        background: linear-gradient(135deg, #2a2a3e 0%, #1e1e2e 100%) !important;
+        border: 1px solid #667eea !important;
+    }
+    
+    /* Emoji display */
     .emoji-display {
-        background: rgba(255, 255, 255, 0.2) !important;
+        background: #374151 !important;
+        border: 1px solid #6b7280 !important;
         border-radius: 50%;
-        padding: 5px;
+        padding: 8px;
     }
     
-    /* Ensure readable text everywhere */
+    /* Override any remaining glass effects */
     * {
-        color: white !important;
-    }
-    
-    /* Override any transparent text */
-    h1, h2, h3, h4, h5, h6, p, span, label, input, button {
-        color: white !important;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
     }
 }
 
 /* iOS Safari PWA specific fixes */
 @supports (-webkit-touch-callout: none) {
     @media all and (display-mode: standalone) {
-        /* Force solid backgrounds for critical readability */
-        .header-content {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8)) !important;
+        /* Additional iOS-specific overrides */
+        body {
+            background: #0c0c0c !important;
         }
         
-        .habit-item {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)) !important;
+        /* Ensure container has proper background */
+        .container {
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%) !important;
+            min-height: 100vh;
         }
         
-        /* Remove backdrop-filter if it's causing issues */
+        /* Force remove any remaining glass effects */
         .glass,
         .header-content,
-        .habit-item {
+        .habit-item,
+        .log-activity-btn,
+        button,
+        .modal-content {
             backdrop-filter: none !important;
             -webkit-backdrop-filter: none !important;
+            filter: none !important;
         }
         
-        /* Add stronger shadows for depth */
+        /* Enhanced shadows for depth without blur */
         .habit-item,
         .header-content,
         .log-activity-btn {
             box-shadow: 
-                0 4px 20px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+                0 8px 25px rgba(0, 0, 0, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+        }
+        
+        /* Ensure text is always readable */
+        h1, h2, h3 {
+            color: #ffffff !important;
+            font-weight: 600 !important;
+        }
+        
+        p, span, label {
+            color: #d1d5db !important;
         }
     }
 }
