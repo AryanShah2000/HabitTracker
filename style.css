@@ -2277,14 +2277,32 @@ header h1 {
         font-weight: 500 !important;
     }
     
-    /* Progress bars - solid backgrounds */
+    /* Progress bars - fix color states */
     .progress-container {
         background: #374151 !important;
         border: 1px solid #6b7280 !important;
     }
     
-    .progress-bar {
+    /* Don't override progress bar colors - let the JavaScript classes work */
+    .progress-fill.low {
+        background: linear-gradient(90deg, #ef4444, #f97316) !important;
+    }
+    
+    .progress-fill.medium {
+        background: linear-gradient(90deg, #f59e0b, #eab308) !important;
+    }
+    
+    .progress-fill.high {
+        background: linear-gradient(90deg, #10b981, #059669) !important;
+    }
+    
+    .progress-fill.complete {
         background: linear-gradient(90deg, #10b981 0%, #34d399 100%) !important;
+    }
+    
+    /* Default progress fill when no class is applied */
+    .progress-fill {
+        background: linear-gradient(90deg, #6b7280, #9ca3af) !important;
     }
     
     /* Date display */
@@ -2295,25 +2313,49 @@ header h1 {
         font-weight: 600 !important;
     }
     
-    /* Modal improvements */
+    /* Modal improvements - use light background with dark text for readability */
     .modal {
         background: rgba(0, 0, 0, 0.85) !important;
     }
     
     .modal-content {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
         border: 2px solid #4facfe !important;
-        color: #ffffff !important;
+        color: #1f2937 !important;
     }
     
-    /* Input fields */
-    input, select, textarea {
+    /* Modal text should be dark for readability */
+    .modal-content h2,
+    .modal-content h3,
+    .modal-content p,
+    .modal-content label,
+    .modal-content span {
+        color: #1f2937 !important;
+    }
+    
+    /* Modal inputs */
+    .modal-content input,
+    .modal-content select,
+    .modal-content textarea {
+        background: #ffffff !important;
+        border: 1px solid #d1d5db !important;
+        color: #1f2937 !important;
+    }
+    
+    .modal-content input::placeholder {
+        color: #6b7280 !important;
+    }
+    
+    /* Input fields - but not modal inputs */
+    input:not(.modal-content input), 
+    select:not(.modal-content select), 
+    textarea:not(.modal-content textarea) {
         background: #374151 !important;
         border: 1px solid #6b7280 !important;
         color: #ffffff !important;
     }
     
-    input::placeholder {
+    input:not(.modal-content input)::placeholder {
         color: #9ca3af !important;
     }
     

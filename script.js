@@ -374,8 +374,8 @@ class HabitTracker {
             // Clear any existing styles first
             this.hideAuthModals();
             
-            // Use requestAnimationFrame for Safari compatibility
-            requestAnimationFrame(() => {
+            // Use multiple approaches for Safari compatibility
+            setTimeout(() => {
                 loginModal.classList.add('show');
                 
                 // Force styles for Safari compatibility
@@ -384,32 +384,56 @@ class HabitTracker {
                     position: fixed !important;
                     top: 0 !important;
                     left: 0 !important;
-                    width: 100% !important;
-                    height: 100% !important;
-                    background: rgba(0, 0, 0, 0.7) !important;
+                    width: 100vw !important;
+                    height: 100vh !important;
+                    background: rgba(0, 0, 0, 0.8) !important;
                     z-index: 9999 !important;
                     align-items: center !important;
                     justify-content: center !important;
+                    opacity: 1 !important;
+                    visibility: visible !important;
                 `;
                 
                 const modalContent = loginModal.querySelector('.modal-content');
                 if (modalContent) {
                     modalContent.style.cssText = `
                         display: block !important;
-                        background: white !important;
-                        color: #333 !important;
+                        background: #ffffff !important;
+                        color: #1f2937 !important;
                         padding: 24px !important;
                         border-radius: 12px !important;
                         max-width: 400px !important;
                         width: 90% !important;
                         z-index: 10000 !important;
                         box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
-                        border: 1px solid #ddd !important;
+                        border: 2px solid #4facfe !important;
+                        margin: auto !important;
+                        position: relative !important;
                     `;
+                    
+                    // Ensure all text in modal is dark
+                    const allTextElements = modalContent.querySelectorAll('h2, h3, p, label, span, input');
+                    allTextElements.forEach(el => {
+                        if (el.tagName === 'INPUT') {
+                            el.style.cssText += `
+                                background: #ffffff !important;
+                                color: #1f2937 !important;
+                                border: 1px solid #d1d5db !important;
+                            `;
+                        } else {
+                            el.style.color = '#1f2937 !important';
+                        }
+                    });
                 }
                 
                 console.log('Login modal should now be visible');
-            });
+                
+                // Focus the first input for better UX
+                const firstInput = loginModal.querySelector('input[type="email"]');
+                if (firstInput) {
+                    setTimeout(() => firstInput.focus(), 100);
+                }
+            }, 50);
         } else {
             console.error('Login modal not found!');
         }
@@ -423,8 +447,8 @@ class HabitTracker {
             // Clear any existing styles first
             this.hideAuthModals();
             
-            // Use requestAnimationFrame for Safari compatibility
-            requestAnimationFrame(() => {
+            // Use multiple approaches for Safari compatibility
+            setTimeout(() => {
                 signupModal.classList.add('show');
                 
                 // Force styles for Safari compatibility
@@ -433,32 +457,56 @@ class HabitTracker {
                     position: fixed !important;
                     top: 0 !important;
                     left: 0 !important;
-                    width: 100% !important;
-                    height: 100% !important;
-                    background: rgba(0, 0, 0, 0.7) !important;
+                    width: 100vw !important;
+                    height: 100vh !important;
+                    background: rgba(0, 0, 0, 0.8) !important;
                     z-index: 9999 !important;
                     align-items: center !important;
                     justify-content: center !important;
+                    opacity: 1 !important;
+                    visibility: visible !important;
                 `;
                 
                 const modalContent = signupModal.querySelector('.modal-content');
                 if (modalContent) {
                     modalContent.style.cssText = `
                         display: block !important;
-                        background: white !important;
-                        color: #333 !important;
+                        background: #ffffff !important;
+                        color: #1f2937 !important;
                         padding: 24px !important;
                         border-radius: 12px !important;
                         max-width: 400px !important;
                         width: 90% !important;
                         z-index: 10000 !important;
                         box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
-                        border: 1px solid #ddd !important;
+                        border: 2px solid #4facfe !important;
+                        margin: auto !important;
+                        position: relative !important;
                     `;
+                    
+                    // Ensure all text in modal is dark
+                    const allTextElements = modalContent.querySelectorAll('h2, h3, p, label, span, input');
+                    allTextElements.forEach(el => {
+                        if (el.tagName === 'INPUT') {
+                            el.style.cssText += `
+                                background: #ffffff !important;
+                                color: #1f2937 !important;
+                                border: 1px solid #d1d5db !important;
+                            `;
+                        } else {
+                            el.style.color = '#1f2937 !important';
+                        }
+                    });
                 }
                 
                 console.log('Signup modal should now be visible');
-            });
+                
+                // Focus the first input for better UX
+                const firstInput = signupModal.querySelector('input[type="email"]');
+                if (firstInput) {
+                    setTimeout(() => firstInput.focus(), 100);
+                }
+            }, 50);
         } else {
             console.error('Signup modal not found!');
         }
@@ -489,12 +537,31 @@ class HabitTracker {
         console.log('authRequiredLogin element:', authRequiredLogin);
         
         if (showLoginBtn) {
+            // Add both click and touchend for Safari iOS compatibility
             showLoginBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 console.log('Show login button clicked');
                 this.showLoginModal();
             }, true);
+            
+            showLoginBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Show login button touched');
+                this.showLoginModal();
+            }, true);
+            
+            // Add active class for visual feedback
+            showLoginBtn.addEventListener('touchstart', (e) => {
+                e.target.style.opacity = '0.7';
+            });
+            
+            showLoginBtn.addEventListener('touchend', (e) => {
+                setTimeout(() => {
+                    e.target.style.opacity = '1';
+                }, 150);
+            });
         }
         
         if (authRequiredLogin) {
@@ -502,6 +569,13 @@ class HabitTracker {
                 e.preventDefault();
                 e.stopPropagation();
                 console.log('Auth required login button clicked');
+                this.showLoginModal();
+            }, true);
+            
+            authRequiredLogin.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Auth required login button touched');
                 this.showLoginModal();
             }, true);
         }
@@ -520,6 +594,24 @@ class HabitTracker {
                 console.log('Show signup button clicked');
                 this.showSignupModal();
             }, true);
+            
+            showSignupBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Show signup button touched');
+                this.showSignupModal();
+            }, true);
+            
+            // Add active class for visual feedback
+            showSignupBtn.addEventListener('touchstart', (e) => {
+                e.target.style.opacity = '0.7';
+            });
+            
+            showSignupBtn.addEventListener('touchend', (e) => {
+                setTimeout(() => {
+                    e.target.style.opacity = '1';
+                }, 150);
+            });
         }
         
         if (authRequiredSignup) {
@@ -527,6 +619,13 @@ class HabitTracker {
                 e.preventDefault();
                 e.stopPropagation();
                 console.log('Auth required signup button clicked');
+                this.showSignupModal();
+            }, true);
+            
+            authRequiredSignup.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Auth required signup button touched');
                 this.showSignupModal();
             }, true);
         }
