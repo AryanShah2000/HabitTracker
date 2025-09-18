@@ -1992,21 +1992,35 @@ header h1 {
 }
 
 .link-btn {
-    background: none;
-    border: none;
-    color: var(--accent-cyan);
+    background: none !important;
+    border: none !important;
+    color: #4facfe !important;
     cursor: pointer;
-    text-decoration: none;
+    text-decoration: underline;
     font-size: inherit;
-    font-weight: 600;
-    transition: all 0.3s ease;
+    font-weight: 500;
+    transition: color 0.3s ease;
     position: relative;
-    text-shadow: none;
+    text-shadow: none !important;
+    padding: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 .link-btn:hover {
-    color: white;
-    text-shadow: 0 0 8px var(--accent-cyan);
+    color: #06b6d4 !important;
+    text-decoration: underline;
+    background: none !important;
+    text-shadow: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.link-btn:focus {
+    color: #06b6d4 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: none !important;
 }
 
 /* Responsive Authentication */
@@ -2305,12 +2319,15 @@ header h1 {
         background: linear-gradient(90deg, #6b7280, #9ca3af) !important;
     }
     
-    /* Date display */
+    /* Date display - remove background, keep as plain text */
     .date-display {
-        background: linear-gradient(135deg, #374151 0%, #1f2937 100%) !important;
-        border: 1px solid #6b7280 !important;
+        background: none !important;
+        border: none !important;
         color: #ffffff !important;
         font-weight: 600 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        text-align: center !important;
     }
     
     /* Modal improvements - use light background with dark text for readability */
@@ -2331,6 +2348,24 @@ header h1 {
     .modal-content label,
     .modal-content span {
         color: #1f2937 !important;
+    }
+    
+    /* Keep link buttons blue even in modals */
+    .modal-content .link-btn {
+        color: #4facfe !important;
+        background: none !important;
+        border: none !important;
+        text-decoration: underline !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    
+    .modal-content .link-btn:hover,
+    .modal-content .link-btn:focus {
+        color: #06b6d4 !important;
+        background: none !important;
+        outline: none !important;
+        box-shadow: none !important;
     }
     
     /* Modal inputs */
