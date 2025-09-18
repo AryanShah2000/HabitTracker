@@ -1231,13 +1231,35 @@ class HabitTracker {
     }
 
     // Delete activity
-    deleteActivity(activityId) {
+    async deleteActivity(activityId) {
         if (confirm('Are you sure you want to delete this activity?')) {
-            this.activities = this.activities.filter(a => a.id != activityId);
-            this.saveActivitiesLocal();
-            this.updateProgress();
-            this.renderCalendar();
-            this.showDailyLogs(this.selectedDate);
+            try {
+                // Delete from server if online
+                if (this.isOnline && this.authToken) {
+                    await this.apiCall('DELETE', { id: activityId });
+                    console.log('Activity deleted from server');
+                }
+                
+                // Remove from local array
+                this.activities = this.activities.filter(a => a.id != activityId);
+                
+                // Save to local storage
+                this.saveActivitiesLocal();
+                
+                // Update UI
+                this.updateProgress();
+                this.renderCalendar();
+                this.showDailyLogs(this.selectedDate);
+                
+            } catch (error) {
+                console.error('Failed to delete from server:', error);
+                // Still delete locally
+                this.activities = this.activities.filter(a => a.id != activityId);
+                this.saveActivitiesLocal();
+                this.updateProgress();
+                this.renderCalendar();
+                this.showDailyLogs(this.selectedDate);
+            }
         }
     }
 

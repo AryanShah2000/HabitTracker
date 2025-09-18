@@ -2234,11 +2234,13 @@ header h1 {
         -webkit-backdrop-filter: none !important;
     }
     
-    /* Header - solid dark background with gradient */
+    /* Header - remove background, keep as plain content */
     .header-content {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
-        border: 2px solid #4facfe !important;
+        background: none !important;
+        border: none !important;
         color: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
     
     /* Habit items - dark background with subtle accent */
