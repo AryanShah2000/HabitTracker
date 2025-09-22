@@ -1033,7 +1033,7 @@ class HabitTracker {
                 previousValue = this.getDayTotal(goalKey, this.getPreviousDay(this.selectedDate));
                 
                 if (previousValue === 0) {
-                    percentage = currentValue > 0 ? '∞' : '0';
+                    percentage = currentValue > 0 ? 'N/A' : '0';
                 } else {
                     percentage = Math.round((currentValue / previousValue) * 100);
                 }
@@ -1049,7 +1049,7 @@ class HabitTracker {
                 previousValue = this.getWeekTotal(goalKey, previousWeek.start, previousWeek.end);
                 
                 if (previousValue === 0) {
-                    percentage = currentValue > 0 ? '∞' : '0';
+                    percentage = currentValue > 0 ? 'N/A' : '0';
                 } else {
                     percentage = Math.round((currentValue / previousValue) * 100);
                 }
@@ -1059,7 +1059,7 @@ class HabitTracker {
             
             // Determine color class
             let colorClass = 'neutral';
-            if (percentage === '∞' || (typeof percentage === 'number' && percentage > 100)) {
+            if (percentage === 'N/A' || (typeof percentage === 'number' && percentage > 100)) {
                 colorClass = 'positive';
             } else if (typeof percentage === 'number' && percentage < 100) {
                 colorClass = 'negative';
@@ -1079,7 +1079,7 @@ class HabitTracker {
                 <div class="goal-name">${card.goal.name}</div>
                 <span class="goal-emoji">${card.goal.emoji}</span>
                 <div class="percentage ${card.colorClass}">
-                    ${card.percentage === '∞' ? '∞' : card.percentage + '%'}
+                    ${card.percentage === 'N/A' ? 'N/A' : card.percentage + '%'}
                 </div>
                 <div class="difference">
                     ${card.difference >= 0 ? '+' : ''}${card.difference} ${card.goal.unit}
