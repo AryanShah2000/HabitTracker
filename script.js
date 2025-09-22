@@ -959,6 +959,9 @@ class HabitTracker {
         
         // Update date display to show selected date
         document.getElementById('currentDate').textContent = this.formatDisplayDate(this.selectedDate);
+        
+        // Update comparison cards
+        this.updateComparison();
     }
     
     // Goal Achievement Calculation
@@ -970,6 +973,128 @@ class HabitTracker {
             if (total >= goal.target) achieved++;
         });
         return achieved;
+    }
+    
+    // Comparison Methods
+    getComparisonMode() {
+        return document.querySelector('input[name="comparisonMode"]:checked').value;
+    }
+    
+    getPreviousDay(date) {
+        const prevDay = new Date(date);
+        prevDay.setDate(prevDay.getDate() - 1);
+        return prevDay;
+    }
+    
+    getWeekStartEnd(date) {
+        const week = new Date(date);
+        const day = week.getDay();
+        const diff = week.getDate() - day; // Get Sunday of the week
+        const weekStart = new Date(week.setDate(diff));
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 6); // Saturday
+        return { start: weekStart, end: weekEnd };
+    }
+    
+    getPreviousWeek(date) {
+        const { start } = this.getWeekStartEnd(date);
+        const prevWeekStart = new Date(start);
+        prevWeekStart.setDate(start.getDate() - 7);
+        const prevWeekEnd = new Date(prevWeekStart);
+        prevWeekEnd.setDate(prevWeekStart.getDate() + 6);
+        return { start: prevWeekStart, end: prevWeekEnd };
+    }
+    
+    getWeekTotal(goalKey, weekStart, weekEnd) {
+        let total = 0;
+        const currentDate = new Date(weekStart);
+        
+        while (currentDate <= weekEnd) {
+            total += this.getDayTotal(goalKey, currentDate);
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        
+        return total;
+    }
+    
+    updateComparison() {
+        const mode = this.getComparisonMode();
+        const cardsContainer = document.getElementById('comparisonCards');
+        
+        if (!cardsContainer) return;
+        
+        const cards = Object.keys(this.goals).map(goalKey => {
+            const goal = this.goals[goalKey];
+            let currentValue, previousValue, percentage, difference;
+            
+            if (mode === 'day') {
+                // Day-over-day comparison
+                currentValue = this.getDayTotal(goalKey, this.selectedDate);
+                previousValue = this.getDayTotal(goalKey, this.getPreviousDay(this.selectedDate));
+                
+                if (previousValue === 0) {
+                    percentage = currentValue > 0 ? '∞' : '0';
+                } else {
+                    percentage = Math.round((currentValue / previousValue) * 100);
+                }
+                
+                difference = currentValue - previousValue;
+                
+            } else {
+                // Week-over-week comparison
+                const currentWeek = this.getWeekStartEnd(this.selectedDate);
+                const previousWeek = this.getPreviousWeek(this.selectedDate);
+                
+                currentValue = this.getWeekTotal(goalKey, currentWeek.start, currentWeek.end);
+                previousValue = this.getWeekTotal(goalKey, previousWeek.start, previousWeek.end);
+                
+                if (previousValue === 0) {
+                    percentage = currentValue > 0 ? '∞' : '0';
+                } else {
+                    percentage = Math.round((currentValue / previousValue) * 100);
+                }
+                
+                difference = currentValue - previousValue;
+            }
+            
+            // Determine color class
+            let colorClass = 'neutral';
+            if (percentage === '∞' || (typeof percentage === 'number' && percentage > 100)) {
+                colorClass = 'positive';
+            } else if (typeof percentage === 'number' && percentage < 100) {
+                colorClass = 'negative';
+            }
+            
+            return {
+                goalKey,
+                goal,
+                percentage,
+                difference,
+                colorClass
+            };
+        });
+        
+        cardsContainer.innerHTML = cards.map(card => `
+            <div class="comparison-card">
+                <div class="goal-name">${card.goal.name}</div>
+                <span class="goal-emoji">${card.goal.emoji}</span>
+                <div class="percentage ${card.colorClass}">
+                    ${card.percentage === '∞' ? '∞' : card.percentage + '%'}
+                </div>
+                <div class="difference">
+                    ${card.difference >= 0 ? '+' : ''}${card.difference} ${card.goal.unit}
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    setupComparisonToggle() {
+        const toggles = document.querySelectorAll('input[name="comparisonMode"]');
+        toggles.forEach(toggle => {
+            toggle.addEventListener('change', () => {
+                this.updateComparison();
+            });
+        });
     }
     
     // Calendar Rendering
@@ -1534,6 +1659,9 @@ class HabitTracker {
         document.getElementById('editActivitySubmit').addEventListener('click', async () => {
             await this.submitEditActivity();
         });
+        
+        // Setup comparison toggle
+        this.setupComparisonToggle();
     }
     
     // Modal Management
