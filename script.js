@@ -1066,7 +1066,7 @@ class HabitTracker {
             const dayTotal = this.getDayTotal(goalKey, currentDate);
             
             // Check if goal was achieved this day
-            if (dayTotal >= goal.dailyGoal) {
+            if (dayTotal >= goal.target) {
                 streak++;
                 currentDate.setDate(currentDate.getDate() - 1);
             } else {
@@ -1098,7 +1098,7 @@ class HabitTracker {
         while (currentDate <= endDate) {
             const dayTotal = this.getDayTotal(goalKey, currentDate);
             
-            if (dayTotal >= goal.dailyGoal) {
+            if (dayTotal >= goal.target) {
                 currentStreak++;
                 longestStreak = Math.max(longestStreak, currentStreak);
             } else {
