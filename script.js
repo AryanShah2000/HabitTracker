@@ -960,8 +960,45 @@ class HabitTracker {
         // Update date display to show selected date
         document.getElementById('currentDate').textContent = this.formatDisplayDate(this.selectedDate);
         
+        // Update streak displays
+        this.updateStreaks();
+        
         // Update comparison cards
         this.updateComparison();
+    }
+    
+    updateStreaks() {
+        // Only update streaks if user is authenticated and main app is visible
+        if (!this.currentUser || document.getElementById('mainApp').style.display === 'none') {
+            return;
+        }
+        
+        Object.keys(this.goals).forEach(goalKey => {
+            const currentStreak = this.getCurrentStreak(goalKey);
+            const longestStreak = this.getLongestStreak(goalKey);
+            
+            // Update streak text
+            const currentElement = document.getElementById(`${goalKey}CurrentStreak`);
+            const longestElement = document.getElementById(`${goalKey}LongestStreak`);
+            
+            if (currentElement) currentElement.textContent = currentStreak;
+            if (longestElement) longestElement.textContent = longestStreak;
+            
+            // Update streak display with data attributes for styling
+            const streakDisplay = document.getElementById(`${goalKey}Streak`);
+            if (streakDisplay) {
+                streakDisplay.setAttribute('data-streak', currentStreak);
+                
+                // Set streak level for different animations
+                let level = 0;
+                if (currentStreak >= 30) level = 4;        // 30+ days: intense flame
+                else if (currentStreak >= 14) level = 3;   // 14+ days: flame animation
+                else if (currentStreak >= 7) level = 2;    // 7+ days: flicker animation  
+                else if (currentStreak >= 3) level = 1;    // 3+ days: slight glow
+                
+                streakDisplay.setAttribute('data-streak-level', level);
+            }
+        });
     }
     
     // Goal Achievement Calculation
@@ -1015,6 +1052,63 @@ class HabitTracker {
         }
         
         return total;
+    }
+    
+    getCurrentStreak(goalKey) {
+        const goal = this.goals[goalKey];
+        if (!goal) return 0;
+        
+        let streak = 0;
+        const currentDate = new Date(this.selectedDate);
+        
+        // Start from selected date and go backwards
+        while (true) {
+            const dayTotal = this.getDayTotal(goalKey, currentDate);
+            
+            // Check if goal was achieved this day
+            if (dayTotal >= goal.dailyGoal) {
+                streak++;
+                currentDate.setDate(currentDate.getDate() - 1);
+            } else {
+                break;
+            }
+        }
+        
+        return streak;
+    }
+    
+    getLongestStreak(goalKey) {
+        const goal = this.goals[goalKey];
+        if (!goal) return 0;
+        
+        let longestStreak = 0;
+        let currentStreak = 0;
+        
+        // Check all activities for this goal to find longest streak
+        const goalActivities = this.activities.filter(activity => activity.goal === goalKey);
+        if (goalActivities.length === 0) return 0;
+        
+        // Get date range of all activities
+        const dates = goalActivities.map(activity => new Date(activity.date));
+        const startDate = new Date(Math.min(...dates));
+        const endDate = new Date(Math.max(...dates));
+        
+        // Check each day in the range
+        const currentDate = new Date(startDate);
+        while (currentDate <= endDate) {
+            const dayTotal = this.getDayTotal(goalKey, currentDate);
+            
+            if (dayTotal >= goal.dailyGoal) {
+                currentStreak++;
+                longestStreak = Math.max(longestStreak, currentStreak);
+            } else {
+                currentStreak = 0;
+            }
+            
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        
+        return longestStreak;
     }
     
     updateComparison() {
